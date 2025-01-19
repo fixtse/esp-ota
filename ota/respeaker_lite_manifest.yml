@@ -10,7 +10,7 @@
         "md5": "b0ac539eda586186df2d048a69b48e85",
         "path": "respeaker-satellite.ota.bin",
         "release_url": "https://github.com/fixtse/esp-ota",
-        "summary": "OTA Setup. Esphome version: 2024.12.4"
+        "summary": "Esphome version: 2024.12.4"
       }
     }    
   ]
