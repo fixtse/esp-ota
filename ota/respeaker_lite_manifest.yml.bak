@@ -1,16 +1,16 @@
 {
   "name": "ReSpeaker Satellite",
-  "version": "2024.12.2",
+  "version": "2024.12.4",
   "home_assistant_domain": "esphome",
   "new_install_prompt_erase": false,
   "builds": [
     {
       "chipFamily": "ESP32-S3",
       "ota": {
-        "md5": "13ae5155d9e8a62b47531c5b02f67000",
+        "md5": "b0ac539eda586186df2d048a69b48e85",
         "path": "respeaker-satellite.ota.bin",
         "release_url": "https://github.com/fixtse/esp-ota",
-        "summary": "OTA Setup"
+        "summary": "Esphome version: 2024.12.4"
       }
     }    
   ]
