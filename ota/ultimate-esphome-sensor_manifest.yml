@@ -7,7 +7,7 @@
     {
       "chipFamily": "ESP32",
       "ota": {
-        "md5": "841d69a8bbabf4d1f4b6bec19560c1ab",
+        "md5": "fc071f48dc914ea1c2d06fe757fe0a11",
         "path": "ultimate-esphome-sensor_no-bluetooth.ota.bin",
         "release_url": "https://github.com/fixtse/esp-ota",
         "summary": "Esphome version: 2024.12.4"

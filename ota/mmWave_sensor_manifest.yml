@@ -7,7 +7,7 @@
     {
       "chipFamily": "ESP32",
       "ota": {
-        "md5": "036f0c3fbb6c567690139f78f5d5151d",
+        "md5": "2d7a1731934ebb9cd7405e1d52621aed",
         "path": "mmwave-sensor.ota.bin",
         "release_url": "https://github.com/fixtse/esp-ota",
         "summary": "Esphome version: 2024.12.4"
