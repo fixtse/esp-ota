@@ -10,7 +10,7 @@
         "md5": "b8cb874b8c46a63e95b6bb94f4e73712",
         "path": "respeaker-satellite.ota.bin",
         "release_url": "https://github.com/fixtse/esp-ota",
-        "summary": "Esphome version: 2024.12.4"
+        "summary": "Fixed http_request module and added Restart Button"
       }
     }    
   ]
