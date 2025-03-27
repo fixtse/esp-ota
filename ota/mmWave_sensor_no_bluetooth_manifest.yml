@@ -7,7 +7,7 @@
     {
       "chipFamily": "ESP32",
       "ota": {
-        "md5": "b6027b161fd2fb39a0d441d78ca22d68",
+        "md5": "68a5efe49bc229ad986fb24dbc41a534",
         "path": "mmwave-sensor_no-bluetooth.ota.bin",
         "release_url": "https://github.com/fixtse/esp-ota",
         "summary": "Esphome version: 2025.3.2"
