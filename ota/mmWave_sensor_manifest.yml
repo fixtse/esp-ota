@@ -1,6 +1,6 @@
 {
   "name": "mmWave Sensor",
-  "version": "2025.4.0",
+  "version": "2025.3.4",
   "home_assistant_domain": "esphome",
   "new_install_prompt_erase": false,
   "builds": [
