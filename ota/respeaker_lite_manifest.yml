@@ -10,7 +10,7 @@
         "md5": "693af6c6e0d79b853ce81b453198e1b4",
         "path": "respeaker-satellite.ota.bin",
         "release_url": "https://github.com/fixtse/esp-ota",
-        "summary": "Esphome version: 2025.4.0"
+        "summary": "Update to syncronize with the latest changes by formatBCE"
       }
     }    
   ]
