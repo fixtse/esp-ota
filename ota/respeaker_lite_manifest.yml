@@ -1,16 +1,16 @@
 {
   "name": "ReSpeaker Satellite",
-  "version": "2025.4.1",
+  "version": "2025.4.2",
   "home_assistant_domain": "esphome",
   "new_install_prompt_erase": false,
   "builds": [
     {
       "chipFamily": "ESP32-S3",
       "ota": {
-        "md5": "4be10719c13d74f0d919b1d438ac21cb",
+        "md5": "554ae65aa57da134b88d114b90d1604b",
         "path": "respeaker-satellite.ota.bin",
         "release_url": "https://github.com/fixtse/esp-ota",
-        "summary": "Update to syncronize with the latest changes by formatBCE / Added Assistant Voice Dynamic Volume Support"
+        "summary": "Esphome version: 2025.4.2"
       }
     }    
   ]
