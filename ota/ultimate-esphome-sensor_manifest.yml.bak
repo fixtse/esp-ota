@@ -1,16 +1,16 @@
 {
   "name": "Ultimate ESPHome Sensor",
-  "version": "2025.7.4",
+  "version": "2025.7.5",
   "home_assistant_domain": "esphome",
   "new_install_prompt_erase": false,
   "builds": [
     {
       "chipFamily": "ESP32",
       "ota": {
-        "md5": "eb932abeb32058daa6c6a6d6fb03d210",
+        "md5": "81a45fda801476dbcc9e16f83906442e",
         "path": "ultimate-esphome-sensor_no-bluetooth.ota.bin",
         "release_url": "https://github.com/fixtse/esp-ota",
-        "summary": "Esphome version: 2025.7.3"
+        "summary": "Esphome version: 2025.7.4"
       }
     }    
   ]
