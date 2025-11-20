@@ -1,16 +1,16 @@
 {
   "name": "mmWave Sensor no Bluetooth",
-  "version": "2025.9.8",
+  "version": "2025.9.9",
   "home_assistant_domain": "esphome",
   "new_install_prompt_erase": false,
   "builds": [
     {
       "chipFamily": "ESP32",
       "ota": {
-        "md5": "c0811f208adc2418bbf11db50c517098",
+        "md5": "f46f981813dffb2c9e0e11d551ae0510",
         "path": "mmWave_sensor_no_bluetooth.ota.bin",
         "release_url": "https://github.com/fixtse/esp-ota",
-        "summary": "Esphome version: 2025.10.4"
+        "summary": "Esphome version: 2025.10.5"
       }
     }    
   ]
