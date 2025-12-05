@@ -1,16 +1,16 @@
 {
   "name": "mini mmWave Sensor",
-  "version": "2025.9.11",
+  "version": "2025.9.12",
   "home_assistant_domain": "esphome",
   "new_install_prompt_erase": false,
   "builds": [
     {
       "chipFamily": "ESP32-C3",
       "ota": {
-        "md5": "4ced160009ac6a89b915d4a1d79d8e24",
+        "md5": "a08387d28e2d1a87a11bcca0004c3abf",
         "path": "mini_mmWave_sensor.ota.bin",
         "release_url": "https://github.com/fixtse/esp-ota",
-        "summary": "Esphome version: 2025.11.2"
+        "summary": "Esphome version: 2025.11.3"
       }
     }    
   ]
