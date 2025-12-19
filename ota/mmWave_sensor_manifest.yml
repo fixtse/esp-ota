@@ -1,16 +1,16 @@
 {
   "name": "mmWave Sensor",
-  "version": "2025.9.15",
+  "version": "2025.9.17",
   "home_assistant_domain": "esphome",
   "new_install_prompt_erase": false,
   "builds": [
     {
       "chipFamily": "ESP32",
       "ota": {
-        "md5": "d29f947454304e03a5799f24562a42d3",
+        "md5": "86c38e6437da7c2d9f1525c21e31564c",
         "path": "mmWave_sensor.ota.bin",
         "release_url": "https://github.com/fixtse/esp-ota",
-        "summary": "Esphome version: 2025.11.5"
+        "summary": "Esphome version: 2025.12.1"
       }
     }    
   ]
