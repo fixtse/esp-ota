@@ -1,6 +1,6 @@
 {
   "name": "Ultimate ESPHome Sensor",
-  "version": "2025.12.7",
+  "version": "2025.12.8",
   "home_assistant_domain": "esphome",
   "new_install_prompt_erase": false,
   "builds":
@@ -9,10 +9,10 @@
         "chipFamily": "ESP32",
         "ota":
           {
-            "md5": "533815294f12ea357fe2b476faaef614",
+            "md5": "47c585c5ada7edb1771b22a64bd412dc",
             "path": "ultimate-esphome-sensor.ota.bin",
             "release_url": "https://github.com/fixtse/esp-ota",
-            "summary": "Esphome version: 2025.12.6",
+            "summary": "Esphome version: 2025.12.7",
           },
       },
     ],
