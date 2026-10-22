@@ -1,0 +1,9 @@
+mmWave_sensor.yaml,mmWave_sensor.ota.bin,mmWave_sensor_manifest.yml,mmwave-sensor
+mmWave_sensor_no_bluetooth.yaml,mmWave_sensor_no_bluetooth.ota.bin,mmWave_sensor_no_bluetooth_manifest.yml,mmwave-sensor-no
+ultimate-esphome-sensor.yaml,ultimate-esphome-sensor.ota.bin,ultimate-esphome-sensor_manifest.yml,uesp-sensor
+ultimate-esphome-sensor_no-bluetooth.yaml,ultimate-esphome-sensor_no-bluetooth.ota.bin,ultimate-esphome-sensor_no-bluetooth_manifest.yml,uesp-sensor-no
+mini-mmwave-sensor.yaml,mini_mmWave_sensor.ota.bin,mini-mmwave-sensor_manifest.yml,mini-mmwave-sensor
+mini-mmwave-sensor_no_bluetooth.yaml,mini_mmWave_sensor_no_bluetooth.ota.bin,mini-mmwave-sensor_no_bluetooth_manifest.yml,mini-mmwave-sensor-no
+mini-mmwave-sensor-fix-wifi.yaml,mini_mmWave_sensor_fix_wifi.ota.bin,mini-mmwave-sensor_manifest_fix_wifi.yml,mini-mmwave-sensor
+mini-mmwave-sensor_no_bluetooth-fix-wifi.yaml,mini_mmWave_sensor_no_bluetooth_fix_wifi.ota.bin,mini-mmwave-sensor_no_bluetooth_manifest_fix_wifi.yml,mini-mmwave-sensor-no
+respeaker-satellite.yaml,respeaker-satellite.ota.bin,respeaker_lite_manifest.yml,respeaker-satellite

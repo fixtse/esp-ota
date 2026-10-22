@@ -1,0 +1,75 @@
+name: Update ESPHome firmware
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/update-firmware.yml'
+      - 'configs/**'
+      - 'scripts/build-firmware.ts'
+      - 'firmware_list.txt'
+  schedule:
+    - cron: '23 * * * *'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: Rebuild even when the latest release was already built
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: esphome-firmware
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - name: Detect latest stable ESPHome release
+        id: release
+        uses: actions/github-script@v7
+        env:
+          FORCE: ${{ github.event_name == 'push' || inputs.force || false }}
+        with:
+          script: |
+            const fs = require('fs');
+            const { data: release } = await github.rest.repos.getLatestRelease({
+              owner: 'esphome', repo: 'esphome'
+            });
+            const version = release.tag_name.replace(/^v/, '');
+            if (release.draft || release.prerelease || !/^\d{4}\.\d+\.\d+$/.test(version)) {
+              throw new Error(`Unexpected stable release: ${release.tag_name}`);
+            }
+            const previous = fs.existsSync('.esphome-version')
+              ? fs.readFileSync('.esphome-version', 'utf8').trim() : '';
+            core.setOutput('version', version);
+            core.setOutput('build', process.env.FORCE === 'true' || previous !== version);
+            core.info(`Latest ESPHome: ${version}; last successful build: ${previous || 'none'}`);
+      - uses: actions/setup-node@v4
+        if: steps.release.outputs.build == 'true'
+        with:
+          node-version: '24'
+      - name: Compile all firmware and update manifests
+        if: steps.release.outputs.build == 'true'
+        env:
+          ESPHOME_VERSION: ${{ steps.release.outputs.version }}
+        run: node scripts/build-firmware.ts "$ESPHOME_VERSION"
+      - name: Commit and push successful builds
+        if: steps.release.outputs.build == 'true'
+        env:
+          ESPHOME_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- ota/*.ota.bin ota/*manifest*.yml .esphome-version
+          if ! git diff --cached --quiet; then
+            git commit -m "Update firmware to ESPHome ${ESPHOME_VERSION}"
+            git push origin "HEAD:${{ github.event.repository.default_branch }}"
+          fi
