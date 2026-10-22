@@ -16,12 +16,20 @@ Push changes to the workflow, notification action, configurations, build script,
 
 ## Telegram configuration
 
-In [repository Actions secrets](https://github.com/fixtse/esp-ota/settings/secrets/actions), add:
+Set these repository settings (the workflow exposes them as named environment variables in the notification job):
 
-- `TELEGRAM_BOT_TOKEN`: the token issued by BotFather for your bot.
-- `TELEGRAM_CHAT_ID`: the destination user, group, or channel chat ID.
+- [Actions secret](https://github.com/fixtse/esp-ota/settings/secrets/actions) `TELEGRAM_BOT_TOKEN`: the token issued by BotFather for your bot.
+- [Actions variable](https://github.com/fixtse/esp-ota/settings/variables/actions) `TELEGRAM_CHAT_ID`: the destination user, group, or channel chat ID. An existing secret of the same name remains supported as a fallback.
 
-Start a conversation with the bot first, or add it to the destination group/channel with permission to send messages. Keep these values in GitHub secrets; do not commit them. After builds and publication finish, a separate notification job sends one message listing all failing configurations/stages (including timed-out builds), the ESPHome version, and workflow log URL. Release detection and publication failures are included too. If credentials are missing or Telegram rejects delivery, the notification step reports an error in Actions; firmware publication remains independent from notification delivery. Repeated failed retries produce new notifications.
+Alternatively, run the interactive setup after signing in with `gh auth login`:
+
+```sh
+bash scripts/configure-telegram.sh
+```
+
+The setup prompts for the bot token privately and creates/updates both named settings in `fixtse/esp-ota`. It does not save the token in the repository. Later, edit their values directly in GitHub Settings → Secrets and variables → Actions.
+
+Start a conversation with the bot first, or add it to the destination group/channel with permission to send messages. Keep the bot token in the GitHub secret; do not commit it. After builds and publication finish, a separate notification job sends one message listing all failing configurations/stages (including timed-out builds), the ESPHome version, and workflow log URL. Release detection and publication failures are included too. If credentials are missing or Telegram rejects delivery, the notification step reports an error in Actions; firmware publication remains independent from notification delivery. Repeated failed retries produce new notifications.
 
 GitHub Actions must be enabled and branch rules must allow `github-actions[bot]` to push using the publishing job's `contents: write` permission. No personal access token or ESPHome secrets are needed for compilation. GitHub may delay scheduled runs, and automatically disables schedules in public repositories after 60 days without repository activity; re-enable in Actions if needed.
 

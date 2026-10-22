@@ -27,7 +27,7 @@ runs:
           const token = process.env.TELEGRAM_BOT_TOKEN;
           const chatId = process.env.TELEGRAM_CHAT_ID;
           if (!token || !chatId) {
-            core.setFailed('Configure TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in repository Actions secrets to receive failure notifications.');
+            core.setFailed('Set the TELEGRAM_BOT_TOKEN repository Actions secret and TELEGRAM_CHAT_ID repository Actions variable to receive failure notifications.');
             return;
           }
           const text = [
