@@ -7,7 +7,7 @@
     {
       "chipFamily": "ESP32-C3",
       "ota": {
-        "md5": "12d1a37903e70ea4896c2a34e4464bbc",
+        "md5": "fbbefc47801093c59b3fe8c64d624869",
         "path": "mini_mmWave_sensor_fix_wifi.ota.bin",
         "release_url": "https://github.com/fixtse/esp-ota",
         "summary": "Esphome version: 2026.10.0"

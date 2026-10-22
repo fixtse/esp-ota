@@ -7,7 +7,7 @@
     {
       "chipFamily": "ESP32",
       "ota": {
-        "md5": "96dad93308f922836d240d15d4f9e139",
+        "md5": "bd848a459634c12e922fb0b231a67fab",
         "path": "ultimate-esphome-sensor.ota.bin",
         "release_url": "https://github.com/fixtse/esp-ota",
         "summary": "Esphome version: 2026.10.0"
