@@ -1,0 +1,54 @@
+name: Notify Telegram of firmware failure
+description: Send a failure notification without logging bot credentials
+inputs:
+  bot-token:
+    description: Telegram bot token
+    required: true
+  chat-id:
+    description: Telegram destination chat ID
+    required: true
+  subject:
+    description: Failed configuration or workflow stage
+    required: true
+  version:
+    description: ESPHome version
+    required: false
+runs:
+  using: composite
+  steps:
+    - uses: actions/github-script@v7
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ inputs.bot-token }}
+        TELEGRAM_CHAT_ID: ${{ inputs.chat-id }}
+        FAILURE_SUBJECT: ${{ inputs.subject }}
+        ESPHOME_VERSION: ${{ inputs.version }}
+      with:
+        script: |
+          const token = process.env.TELEGRAM_BOT_TOKEN;
+          const chatId = process.env.TELEGRAM_CHAT_ID;
+          if (!token || !chatId) {
+            core.setFailed('Configure TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in repository Actions secrets to receive failure notifications.');
+            return;
+          }
+          const text = [
+            'ESPHome firmware failure',
+            `Repository: ${context.repo.owner}/${context.repo.repo}`,
+            `Build/stage: ${process.env.FAILURE_SUBJECT}`,
+            `ESPHome: ${process.env.ESPHOME_VERSION || 'unknown'}`,
+            `Logs: ${process.env.GITHUB_SERVER_URL}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
+          ].join('\n');
+          try {
+            const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ chat_id: chatId, text }),
+              signal: AbortSignal.timeout(15000)
+            });
+            const result = await response.json();
+            if (!response.ok || !result.ok) {
+              core.setFailed(`Telegram notification rejected (HTTP ${response.status}). Check bot credentials and chat permissions.`);
+            }
+          } catch {
+            // Fetch errors can include the credential-bearing URL; do not print them.
+            core.setFailed('Telegram notification failed because of a network error or invalid response.');
+          }

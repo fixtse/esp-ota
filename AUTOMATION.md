@@ -4,21 +4,35 @@ Everything needed lives in this repository:
 
 - `configs/`: the nine source configurations and the ReSpeaker shared package.
 - `firmware_list.txt`: config filename, published OTA filename, JSON manifest filename, ESPHome node name.
-- `scripts/build-firmware.ts`: builds using the exact stable ESPHome Docker image, updates manifest versions/checksums, and records `.esphome-version` only after all builds succeed.
-- `.github/workflows/update-firmware.yml`: checks the latest stable release of `esphome/esphome` hourly, at minute 23 UTC. Releases in another repository do not directly trigger this repository's `release` event, so the workflow polls GitHub's Releases API. Prereleases are excluded.
+- `scripts/build-firmware.ts`: builds one configuration using the exact stable ESPHome Docker image and updates its OTA binary, JSON manifest, and version marker.
+- `.github/workflows/update-firmware.yml`: checks the latest stable release of `esphome/esphome` hourly at minute 23 UTC. Releases in another repository do not directly trigger this repository's `release` event, so the workflow polls GitHub's Releases API. Prereleases are excluded.
+- `.github/actions/notify-telegram/`: sends failure notifications through the Telegram Bot API.
 
-Push these files to the default branch to activate the schedule. GitHub Actions must be enabled and branch rules must allow `github-actions[bot]` to push using the workflow's `contents: write` permission. No personal access token or ESPHome secrets are needed for these configurations. GitHub may delay scheduled runs, and automatically disables schedules in public repositories after 60 days without repository activity; re-enable in Actions if needed.
+Each configuration runs as a separate matrix job, with `fail-fast: false`. One failure never cancels the other builds. Each successful job uploads its own firmware, manifest, and `firmware-versions/<config>.txt` marker. After all jobs finish, the publishing job commits the successful artifacts even when other jobs failed. Failed configurations retain their previously published binary, manifest, and version marker. If all builds fail, nothing is published. The workflow still shows a failure if any build fails.
 
-Pushing changes to the workflow, configurations, build script, or firmware list on `main` also triggers a build. Firmware-only bot commits do not trigger another build. The first run builds the latest stable release. Later runs skip the build if `.esphome-version` matches. Failures leave that marker unchanged so the next scheduled run retries; no partial firmware batch is committed. The marker tracks the compiler independently from older manifest version numbers, which the previous script sometimes incremented manually.
+The hourly check skips configurations already published for the latest release and retries only the failed/outdated configurations. A legacy `.esphome-version` marker, if present, is used as a fallback until per-configuration markers exist. The markers track the compiler independently from old manifest version numbers, which the previous script sometimes incremented manually.
 
-Use Actions → Update ESPHome firmware → Run workflow to run immediately. Select `force` to rebuild the latest release after editing configurations. The workflow compiles binaries only; devices continue to use their existing OTA manifest URLs. Config project versions are changed in an isolated temporary build directory; source files remain unchanged.
+Push changes to the workflow, notification action, configurations, build script, or firmware list on `main` to rebuild all configurations. Firmware-only bot commits do not trigger another build. Use Actions → Update ESPHome firmware → Run workflow to check immediately, or select `force` to rebuild all configurations even when their versions match.
+
+## Telegram configuration
+
+In [repository Actions secrets](https://github.com/fixtse/esp-ota/settings/secrets/actions), add:
+
+- `TELEGRAM_BOT_TOKEN`: the token issued by BotFather for your bot.
+- `TELEGRAM_CHAT_ID`: the destination user, group, or channel chat ID.
+
+Start a conversation with the bot first, or add it to the destination group/channel with permission to send messages. Keep these values in GitHub secrets; do not commit them. After builds and publication finish, a separate notification job sends one message listing all failing configurations/stages (including timed-out builds), the ESPHome version, and workflow log URL. Release detection and publication failures are included too. If credentials are missing or Telegram rejects delivery, the notification step reports an error in Actions; firmware publication remains independent from notification delivery. Repeated failed retries produce new notifications.
+
+GitHub Actions must be enabled and branch rules must allow `github-actions[bot]` to push using the publishing job's `contents: write` permission. No personal access token or ESPHome secrets are needed for compilation. GitHub may delay scheduled runs, and automatically disables schedules in public repositories after 60 days without repository activity; re-enable in Actions if needed.
 
 For a local build, install Node.js 24 and Docker, then run:
 
 ```sh
-node scripts/build-firmware.ts 2026.6.3
+node scripts/build-firmware.ts 2026.10.0 mini-mmwave-sensor.yaml
 ```
 
-This updates local OTA binaries/manifests without committing or pushing. Nine builds run sequentially, cleaning between variants that share node names. ESPHome dependencies, remote components, and remote audio assets still require internet access. Future ESPHome releases may require configuration updates; a failed build appears as a failed Actions run instead of publishing incomplete firmware.
+This updates only that configuration's local OTA binary, manifest, and version marker without committing or pushing. Every build uses an isolated temporary configuration directory; source project versions remain unchanged and variants sharing node names cannot reuse one another's outputs. The workflow compiles binaries only; devices continue to use their existing OTA manifest URLs.
+
+ESPHome dependencies, remote components, and remote audio assets require internet access. Future ESPHome releases may require configuration updates; failed builds keep their last successfully published firmware.
 
 Two source configuration corrections were made during migration: the Bluetooth-free Wi-Fi fix variant now references its existing manifest filename, and ReSpeaker's factory-reset warning uses its defined red Fast Pulse effect instead of an undefined effect. Legacy manifests with trailing commas are accepted on input and rewritten as valid JSON after a successful build.

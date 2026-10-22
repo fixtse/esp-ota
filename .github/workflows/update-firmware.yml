@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/update-firmware.yml'
+      - '.github/actions/notify-telegram/**'
       - 'configs/**'
       - 'scripts/build-firmware.ts'
       - 'firmware_list.txt'
@@ -18,21 +19,22 @@ on:
         default: false
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: esphome-firmware
   cancel-in-progress: false
 
 jobs:
-  update:
+  detect:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    outputs:
+      version: ${{ steps.release.outputs.version }}
+      build: ${{ steps.release.outputs.build }}
+      matrix: ${{ steps.release.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.repository.default_branch }}
-      - name: Detect latest stable ESPHome release
+      - name: Detect release and select configurations needing builds
         id: release
         uses: actions/github-script@v7
         env:
@@ -47,29 +49,128 @@ jobs:
             if (release.draft || release.prerelease || !/^\d{4}\.\d+\.\d+$/.test(version)) {
               throw new Error(`Unexpected stable release: ${release.tag_name}`);
             }
-            const previous = fs.existsSync('.esphome-version')
-              ? fs.readFileSync('.esphome-version', 'utf8').trim() : '';
+            const readVersion = path => fs.existsSync(path) ? fs.readFileSync(path, 'utf8').trim() : '';
+            const legacyVersion = readVersion('.esphome-version');
+            const configurations = fs.readFileSync('firmware_list.txt', 'utf8').split(/\r?\n/)
+              .filter(line => line.trim() && !line.trim().startsWith('#'))
+              .map(line => {
+                const fields = line.split(',').map(field => field.trim());
+                if (fields.length !== 4 || fields.some(field => !/^[A-Za-z0-9_-][A-Za-z0-9_.-]*$/.test(field))) {
+                  throw new Error(`Invalid firmware list entry: ${line}`);
+                }
+                const [config, binary, manifest, node] = fields;
+                return { config, binary, manifest, node };
+              });
+            if (!configurations.length) throw new Error('Firmware list is empty');
+            for (const key of ['config', 'binary', 'manifest']) {
+              if (new Set(configurations.map(entry => entry[key])).size !== configurations.length) {
+                throw new Error(`Duplicate ${key} in firmware list`);
+              }
+            }
+            const pending = configurations.filter(entry => process.env.FORCE === 'true' ||
+              (readVersion(`firmware-versions/${entry.config}.txt`) || legacyVersion) !== version);
             core.setOutput('version', version);
-            core.setOutput('build', process.env.FORCE === 'true' || previous !== version);
-            core.info(`Latest ESPHome: ${version}; last successful build: ${previous || 'none'}`);
+            core.setOutput('build', pending.length > 0);
+            core.setOutput('matrix', JSON.stringify({ include: pending }));
+            core.info(`ESPHome ${version}: ${pending.length} configurations need builds`);
+
+  build:
+    needs: detect
+    if: needs.detect.outputs.build == 'true'
+    name: Build ${{ matrix.config }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.detect.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        if: steps.release.outputs.build == 'true'
         with:
           node-version: '24'
-      - name: Compile all firmware and update manifests
-        if: steps.release.outputs.build == 'true'
+      - name: Compile firmware and update its manifest
         env:
-          ESPHOME_VERSION: ${{ steps.release.outputs.version }}
-        run: node scripts/build-firmware.ts "$ESPHOME_VERSION"
-      - name: Commit and push successful builds
-        if: steps.release.outputs.build == 'true'
+          ESPHOME_VERSION: ${{ needs.detect.outputs.version }}
+          FIRMWARE_CONFIG: ${{ matrix.config }}
+        run: node scripts/build-firmware.ts "$ESPHOME_VERSION" "$FIRMWARE_CONFIG"
+      - name: Upload successful firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware-${{ matrix.config }}
+          if-no-files-found: error
+          retention-days: 7
+          path: |
+            ota/${{ matrix.binary }}
+            ota/${{ matrix.manifest }}
+            firmware-versions/${{ matrix.config }}.txt
+
+  publish:
+    needs: [detect, build]
+    if: ${{ always() && !cancelled() && needs.detect.outputs.build == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - name: Download successful builds even if other builds failed
+        uses: actions/download-artifact@v4
+        with:
+          pattern: firmware-*
+          merge-multiple: true
+          path: incoming
+      - name: Commit and push successful builds only
         env:
-          ESPHOME_VERSION: ${{ steps.release.outputs.version }}
+          ESPHOME_VERSION: ${{ needs.detect.outputs.version }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
+          if [ ! -d incoming/firmware-versions ]; then
+            echo 'No successful builds to publish.'
+            exit 0
+          fi
+          cp -R incoming/ota/. ota/
+          mkdir -p firmware-versions
+          cp incoming/firmware-versions/*.txt firmware-versions/
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- ota/*.ota.bin ota/*manifest*.yml .esphome-version
+          git add -- ota/*.ota.bin ota/*manifest*.yml firmware-versions/
           if ! git diff --cached --quiet; then
-            git commit -m "Update firmware to ESPHome ${ESPHOME_VERSION}"
-            git push origin "HEAD:${{ github.event.repository.default_branch }}"
+            git commit -m "Update successful firmware builds to ESPHome ${ESPHOME_VERSION}"
+            git pull --rebase origin "$DEFAULT_BRANCH"
+            git push origin "HEAD:$DEFAULT_BRANCH"
           fi
+
+  notify:
+    needs: [detect, build, publish]
+    if: ${{ always() && contains(needs.*.result, 'failure') }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Collect failed builds and stages, including timeouts
+        id: failures
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const jobs = await github.paginate(github.rest.actions.listJobsForWorkflowRun, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.runId,
+              filter: 'latest',
+              per_page: 100
+            });
+            const failed = jobs.filter(job =>
+              ['failure', 'timed_out', 'startup_failure'].includes(job.conclusion));
+            core.setOutput('subject', failed.length
+              ? failed.map(job => `${job.name}: ${job.conclusion}`).join('\n')
+              : 'Firmware workflow failed; see the run logs');
+      - name: Notify Telegram of all failures
+        uses: ./.github/actions/notify-telegram
+        with:
+          bot-token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
+          subject: ${{ steps.failures.outputs.subject }}
+          version: ${{ needs.detect.outputs.version }}
