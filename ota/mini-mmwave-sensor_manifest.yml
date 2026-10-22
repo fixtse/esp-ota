@@ -7,7 +7,7 @@
     {
       "chipFamily": "ESP32-C3",
       "ota": {
-        "md5": "204244feed9d0be9ed9f64a3e5d3c781",
+        "md5": "4f5e89cb95040a9b7d78ffa9ba07373f",
         "path": "mini_mmWave_sensor.ota.bin",
         "release_url": "https://github.com/fixtse/esp-ota",
         "summary": "Esphome version: 2026.10.0"

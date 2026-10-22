@@ -7,7 +7,7 @@
     {
       "chipFamily": "ESP32-S3",
       "ota": {
-        "md5": "2f52170327f7f75e95407e9f31def0ad",
+        "md5": "d0a9423e423ec1f9784c5a17f1554f8b",
         "path": "respeaker-satellite.ota.bin",
         "release_url": "https://github.com/fixtse/esp-ota",
         "summary": "Esphome version: 2026.10.0"

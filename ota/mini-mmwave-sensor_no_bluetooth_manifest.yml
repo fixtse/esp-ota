@@ -7,7 +7,7 @@
     {
       "chipFamily": "ESP32-C3",
       "ota": {
-        "md5": "d843004370235bf399cfacb1d782ab2c",
+        "md5": "668409321ebaedc3b637d80b18c3c0fc",
         "path": "mini_mmWave_sensor_no_bluetooth.ota.bin",
         "release_url": "https://github.com/fixtse/esp-ota",
         "summary": "Esphome version: 2026.10.0"
