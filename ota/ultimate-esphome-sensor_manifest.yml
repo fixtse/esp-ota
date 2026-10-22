@@ -1,16 +1,16 @@
 {
   "name": "Ultimate ESPHome Sensor",
-  "version": "2026.10.0",
+  "version": "2026.10.0.1",
   "home_assistant_domain": "esphome",
   "new_install_prompt_erase": false,
   "builds": [
     {
       "chipFamily": "ESP32",
       "ota": {
-        "md5": "071c0e54632afc8840a98fd4bd536e09",
+        "md5": "695bb95b41a2a57e548eca09797b74db",
         "path": "ultimate-esphome-sensor.ota.bin",
         "release_url": "https://github.com/fixtse/esp-ota",
-        "summary": "Esphome version: 2026.10.0"
+        "summary": "Enlarged HTTP buffers; firmware 2026.10.0.1; ESPHome 2026.10.0"
       }
     }
   ]
