@@ -1,0 +1,18 @@
+# =============================================================================
+# Respeaker Lite satellite — all packages
+#
+# This file includes every package of the Respeaker Lite satellite. Existing
+# configurations that import this file keep working. A new configuration can
+# also list the packages directly, as the README shows.
+#
+# The order is important: a later package overrides a value of an earlier one.
+# =============================================================================
+
+packages:
+  core_base: !include packages/core/base.yaml
+  core_voice_assistant: !include packages/core/voice-assistant.yaml
+  core_media_player: !include packages/core/media-player.yaml
+  core_timers_alarm: !include packages/core/timers-alarm.yaml
+  core_controls: !include packages/core/controls.yaml
+  respeaker_lite_hardware: !include packages/respeaker-lite/hardware.yaml
+  lite_device: !include packages/lite/device.yaml

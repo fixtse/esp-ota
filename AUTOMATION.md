@@ -43,6 +43,14 @@ This updates only that configuration's local OTA binary, manifest, and version m
 
 ESPHome dependencies, remote components, and remote audio assets require internet access. Future ESPHome releases may require configuration updates; failed builds keep their last successfully published firmware.
 
-Two source configuration corrections were made during migration: the Bluetooth-free Wi-Fi fix variant now references its existing manifest filename, and ReSpeaker's factory-reset warning uses its defined red Fast Pulse effect instead of an undefined effect. Legacy manifests with trailing commas are accepted on input and rewritten as valid JSON after a successful build.
+The Bluetooth-free Wi-Fi fix variant references its existing manifest filename. Legacy manifests with trailing commas are accepted on input and rewritten as valid JSON after a successful build.
 
 Artifact discovery supports both native ESP-IDF (`.esphome/build/<node>/build/firmware.ota.bin`) and PlatformIO (`.esphome/build/<node>/.pioenvs/<node>/firmware.ota.bin`) output. Run `node --test scripts/firmware-artifact.test.ts` with Node.js 24 to verify both layouts.
+
+## ReSpeaker Lite features
+
+`configs/respeaker-satellite.yaml` includes a local snapshot of upstream ReSpeaker Lite release 2026.10.3. Source revision, local corrections, and upgrade notes are in `configs/common/respeaker-lite/UPSTREAM.md`.
+
+The snapshot adds Sendspin, source-based media playback with local Opus sounds, configurable snooze (including the Snooze wake word, pending state and cancel button), a native Home Assistant alarm-time entity, disabling physical controls, wake-word recovery, 16 kHz microphone resampling, and improved LED timing and fault indication. It retains SoundSense, device/project identity, Wi-Fi diagnostics, the media player's existing name, Improv provisioning, the existing HTTP OTA manifest, and the `set_alarm_time` API action. A one-time migration copies a valid saved HH:MM alarm time into the new time entity without enabling an alarm that was off. Dashboards using the old alarm text sensor should switch to the time entity.
+
+To refresh the snapshot, review and copy the seven upstream packages together, update `respeaker_lite_ref` and the attribution file to the same revision, preserve the documented local timer safety correction, and compile locally with the workflow's exact ESPHome version before publishing.
