@@ -24,10 +24,11 @@ runs:
         ESPHOME_VERSION: ${{ inputs.version }}
       with:
         script: |
-          const token = process.env.TELEGRAM_BOT_TOKEN;
-          const chatId = process.env.TELEGRAM_CHAT_ID;
+          const token = process.env.TELEGRAM_BOT_TOKEN?.trim();
+          const chatId = process.env.TELEGRAM_CHAT_ID?.trim();
           if (!token || !chatId) {
-            core.setFailed('Set the TELEGRAM_BOT_TOKEN repository Actions secret and TELEGRAM_CHAT_ID repository Actions variable to receive failure notifications.');
+            const missing = [!token && 'TELEGRAM_BOT_TOKEN', !chatId && 'TELEGRAM_CHAT_ID'].filter(Boolean);
+            core.setFailed(`Missing Telegram settings: ${missing.join(', ')}. Add repository Actions secrets before starting a new workflow run.`);
             return;
           }
           const text = [

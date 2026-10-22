@@ -1,8 +1,9 @@
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { cpSync, existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { basename, join, resolve } from 'node:path';
+import { findOtaFirmware } from './firmware-artifact.ts';
 
 interface FirmwareEntry {
   readonly config: string;
@@ -56,8 +57,8 @@ try {
   // Two Wi-Fi variants share node names; clean to prevent reusing another variant's output.
   run([...dockerArgs, 'clean', entry.config]);
   run([...dockerArgs, 'compile', entry.config]);
-  const firmware = join(work, 'config', '.esphome', 'build', entry.node, '.pioenvs', entry.node, 'firmware.ota.bin');
-  if (!existsSync(firmware) || statSync(firmware).size === 0) throw new Error(`Missing or empty OTA binary: ${firmware}`);
+  const firmware = findOtaFirmware(join(work, 'config', '.esphome', 'build', entry.node), entry.node);
+  console.log(`Using OTA binary: ${firmware}`);
   const content = readFileSync(firmware);
   const manifest: FirmwareManifest = JSON.parse(
     // Older manifests contain trailing commas before closing braces/arrays.

@@ -19,7 +19,7 @@ Push changes to the workflow, notification action, configurations, build script,
 Set these repository settings (the workflow exposes them as named environment variables in the notification job):
 
 - [Actions secret](https://github.com/fixtse/esp-ota/settings/secrets/actions) `TELEGRAM_BOT_TOKEN`: the token issued by BotFather for your bot.
-- [Actions variable](https://github.com/fixtse/esp-ota/settings/variables/actions) `TELEGRAM_CHAT_ID`: the destination user, group, or channel chat ID. An existing secret of the same name remains supported as a fallback.
+- [Actions secret](https://github.com/fixtse/esp-ota/settings/secrets/actions) `TELEGRAM_CHAT_ID`: the destination user, group, or channel chat ID. An Actions variable of the same name is also supported as a fallback; the secret takes priority.
 
 Alternatively, run the interactive setup after signing in with `gh auth login`:
 
@@ -27,7 +27,7 @@ Alternatively, run the interactive setup after signing in with `gh auth login`:
 bash scripts/configure-telegram.sh
 ```
 
-The setup prompts for the bot token privately and creates/updates both named settings in `fixtse/esp-ota`. It does not save the token in the repository. Later, edit their values directly in GitHub Settings → Secrets and variables → Actions.
+The setup prompts for both values privately and creates/updates both named secrets in `fixtse/esp-ota`. It does not save the token in the repository. Later, edit their values directly in GitHub Settings → Secrets and variables → Actions.
 
 Start a conversation with the bot first, or add it to the destination group/channel with permission to send messages. Keep the bot token in the GitHub secret; do not commit it. After builds and publication finish, a separate notification job sends one message listing all failing configurations/stages (including timed-out builds), the ESPHome version, and workflow log URL. Release detection and publication failures are included too. If credentials are missing or Telegram rejects delivery, the notification step reports an error in Actions; firmware publication remains independent from notification delivery. Repeated failed retries produce new notifications.
 
@@ -44,3 +44,5 @@ This updates only that configuration's local OTA binary, manifest, and version m
 ESPHome dependencies, remote components, and remote audio assets require internet access. Future ESPHome releases may require configuration updates; failed builds keep their last successfully published firmware.
 
 Two source configuration corrections were made during migration: the Bluetooth-free Wi-Fi fix variant now references its existing manifest filename, and ReSpeaker's factory-reset warning uses its defined red Fast Pulse effect instead of an undefined effect. Legacy manifests with trailing commas are accepted on input and rewritten as valid JSON after a successful build.
+
+Artifact discovery supports both native ESP-IDF (`.esphome/build/<node>/build/firmware.ota.bin`) and PlatformIO (`.esphome/build/<node>/.pioenvs/<node>/firmware.ota.bin`) output. Run `node --test scripts/firmware-artifact.test.ts` with Node.js 24 to verify both layouts.

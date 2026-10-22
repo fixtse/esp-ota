@@ -8,6 +8,7 @@ on:
       - '.github/actions/notify-telegram/**'
       - 'configs/**'
       - 'scripts/build-firmware.ts'
+      - 'scripts/firmware-artifact*.ts'
       - 'firmware_list.txt'
   schedule:
     - cron: '23 * * * *'
@@ -150,7 +151,7 @@ jobs:
       actions: read
     env:
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-      TELEGRAM_CHAT_ID: ${{ vars.TELEGRAM_CHAT_ID || secrets.TELEGRAM_CHAT_ID }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID || vars.TELEGRAM_CHAT_ID }}
     steps:
       - uses: actions/checkout@v4
       - name: Collect failed builds and stages, including timeouts
