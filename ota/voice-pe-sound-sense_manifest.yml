@@ -7,10 +7,10 @@
     {
       "chipFamily": "ESP32-S3",
       "ota": {
-        "md5": "f0a21174282c1e95af21884e6c491b20",
+        "md5": "49da81572d044a53bf0a508c076fc1c9",
         "path": "voice-pe-sound-sense.ota.bin",
         "release_url": "https://github.com/fixtse/esp-ota",
-        "summary": "Voice PE with SoundSense; ESPHome 2026.10.0"
+        "summary": "Esphome version: 2026.10.0"
       }
     }
   ]
