@@ -1,0 +1,25 @@
+name: Firmware download statistics
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '43 8 * * *'
+  workflow_run:
+    workflows: [Update ESPHome firmware]
+    types: [completed]
+
+permissions:
+  contents: read
+
+jobs:
+  statistics:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Report release download counts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/download-statistics.ts

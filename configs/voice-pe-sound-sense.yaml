@@ -15,7 +15,7 @@ packages:
 esphome:
   project:
     name: fixtse.Voice PE SoundSense
-    version: 2026.10.0
+    version: 2026.10.0.1
   min_version: 2026.10.0
   name: voice-pe-sound-sense
   friendly_name: Voice PE SoundSense
@@ -26,13 +26,15 @@ ota:
     id: ota_http_request
 
 http_request:
+  buffer_size_rx: 2048
+  buffer_size_tx: 2048
 
 update:
   - platform: http_request
     name: Firmware Update
     id: update_http_request
     update_interval: 30min
-    source: https://raw.githubusercontent.com/fixtse/esp-ota/refs/heads/main/ota/voice-pe-sound-sense_manifest.yml
+    source: https://raw.githubusercontent.com/fixtse/esp-ota/refs/heads/main/ota/releases/voice-pe-sound-sense_manifest.yml
 
 dashboard_import:
   package_import_url: github://fixtse/esp-ota/configs/voice-pe-sound-sense.yaml@main

@@ -16,7 +16,7 @@ packages:
 esphome:
   project:
     name: fixtse.Respeaker Lite Satellite
-    version: 2026.3.1
+    version: 2026.10.0.1
   min_version: 2026.10.0
   name: respeaker-satellite
   friendly_name: respeaker-satellite
@@ -91,12 +91,14 @@ ota:
     id: ota_http_request
 
 http_request:
+  buffer_size_rx: 2048
+  buffer_size_tx: 2048
 
 update:
   - platform: http_request
     name: Firmware Update
     update_interval: 30min
-    source: https://raw.githubusercontent.com/fixtse/esp-ota/refs/heads/main/ota/respeaker_lite_manifest.yml
+    source: https://raw.githubusercontent.com/fixtse/esp-ota/refs/heads/main/ota/releases/respeaker_lite_manifest.yml
 
 improv_serial:
 

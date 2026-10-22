@@ -7,8 +7,7 @@ on:
       - '.github/workflows/update-firmware.yml'
       - '.github/actions/notify-telegram/**'
       - 'configs/**'
-      - 'scripts/build-firmware.ts'
-      - 'scripts/firmware-artifact*.ts'
+      - 'scripts/*.ts'
       - 'firmware_list.txt'
   schedule:
     - cron: '23 * * * *'
@@ -35,6 +34,11 @@ jobs:
       matrix: ${{ steps.release.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check firmware publication logic
+        run: node --test scripts/*.test.ts
       - name: Detect release and select configurations needing builds
         id: release
         uses: actions/github-script@v7
@@ -69,6 +73,7 @@ jobs:
               }
             }
             const pending = configurations.filter(entry => process.env.FORCE === 'true' ||
+              !fs.existsSync(`ota/releases/${entry.manifest}`) ||
               (readVersion(`firmware-versions/${entry.config}.txt`) || legacyVersion) !== version);
             core.setOutput('version', version);
             core.setOutput('build', pending.length > 0);
@@ -101,9 +106,9 @@ jobs:
           if-no-files-found: error
           retention-days: 7
           path: |
-            ota/${{ matrix.binary }}
-            ota/${{ matrix.manifest }}
-            firmware-versions/${{ matrix.config }}.txt
+            built/ota/${{ matrix.binary }}
+            built/ota/${{ matrix.manifest }}
+            built/firmware-versions/${{ matrix.config }}.txt
 
   publish:
     needs: [detect, build]
@@ -121,23 +126,34 @@ jobs:
           pattern: firmware-*
           merge-multiple: true
           path: incoming
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Publish OTA release assets and update manifests
+        id: publication
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ESPHOME_VERSION: ${{ needs.detect.outputs.version }}
+        run: node scripts/publish-firmware.ts "$ESPHOME_VERSION" incoming
       - name: Commit and push successful builds only
         env:
           ESPHOME_VERSION: ${{ needs.detect.outputs.version }}
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          MIGRATIONS: ${{ steps.publication.outputs.migrations }}
         run: |
           if [ ! -d incoming/firmware-versions ]; then
             echo 'No successful builds to publish.'
             exit 0
           fi
-          cp -R incoming/ota/. ota/
-          mkdir -p firmware-versions
-          cp incoming/firmware-versions/*.txt firmware-versions/
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- ota/*.ota.bin ota/*manifest*.yml firmware-versions/
+          git add -- ota/ firmware-versions/
           if ! git diff --cached --quiet; then
-            git commit -m "Update successful firmware builds to ESPHome ${ESPHOME_VERSION}"
+            if [ "$MIGRATIONS" != '0' ]; then
+              git commit -m "Enlarge HTTP buffers for firmware updates"
+            else
+              git commit -m "Update successful firmware builds for ESPHome ${ESPHOME_VERSION}"
+            fi
             git pull --rebase origin "$DEFAULT_BRANCH"
             git push origin "HEAD:$DEFAULT_BRANCH"
           fi

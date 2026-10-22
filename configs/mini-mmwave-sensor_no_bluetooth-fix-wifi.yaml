@@ -2,7 +2,7 @@ esphome:
   name: mini-mmwave-sensor-no
   project:
     name: fixtse.mmWave Sensor
-    version: 2026.3.1
+    version: 2026.10.0.1
   friendly_name: mini mmWave Sensor No Bluetooth
   name_add_mac_suffix: True
 
@@ -241,12 +241,14 @@ ota:
   - platform: esphome
 
 http_request:
+  buffer_size_rx: 2048
+  buffer_size_tx: 2048
 
 update:
   - platform: http_request
     name: Firmware Update
     update_interval: 30min
-    source: https://raw.githubusercontent.com/fixtse/esp-ota/refs/heads/main/ota/mini-mmwave-sensor_no_bluetooth_manifest_fix_wifi.yml
+    source: https://raw.githubusercontent.com/fixtse/esp-ota/refs/heads/main/ota/releases/mini-mmwave-sensor_no_bluetooth_manifest_fix_wifi.yml
 
 wifi:
   ap:

@@ -1,20 +1,11 @@
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { cpSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { basename, join, resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 import { findOtaFirmware } from './firmware-artifact.ts';
 
-interface FirmwareEntry {
-  readonly config: string;
-  readonly binary: string;
-  readonly manifest: string;
-  readonly node: string;
-}
-interface FirmwareManifest {
-  version: string;
-  builds: { ota: { md5: string; path: string; summary: string } }[];
-}
+import { getOta, loadFirmwareList, nextFirmwareVersion, readManifest } from './firmware-domain.ts';
 
 const root = resolve(import.meta.dirname, '..');
 const version = process.argv[2];
@@ -22,18 +13,12 @@ const selectedConfig = process.argv[3];
 if (!version || !/^\d{4}\.\d+\.\d+$/.test(version) || !selectedConfig) {
   throw new Error('Usage: node scripts/build-firmware.ts YYYY.M.PATCH CONFIG.yaml');
 }
-const entries: readonly FirmwareEntry[] = readFileSync(join(root, 'firmware_list.txt'), 'utf8')
-  .split(/\r?\n/).filter(line => line.trim() && !line.trim().startsWith('#'))
-  .map(line => {
-    const fields = line.split(',').map(field => field.trim());
-    if (fields.length !== 4 || fields.some(field => !field || basename(field) !== field || field === '..')) {
-      throw new Error(`Invalid firmware_list entry: ${line}`);
-    }
-    const [config, binary, manifest, node] = fields;
-    return { config, binary, manifest, node };
-  });
+const entries = loadFirmwareList(join(root, 'firmware_list.txt'));
 const entry = entries.find(entry => entry.config === selectedConfig);
 if (!entry) throw new Error(`Unknown configuration: ${selectedConfig}`);
+const publishedPath = join(root, 'ota', 'releases', entry.manifest);
+const published = readManifest(existsSync(publishedPath) ? publishedPath : join(root, 'ota', entry.manifest));
+const firmwareVersion = nextFirmwareVersion(version, published.version);
 const work = mkdtempSync(join(tmpdir(), 'esp-ota-'));
 const image = `ghcr.io/esphome/esphome:${version}`;
 const run = (args: readonly string[]) => execFileSync('docker', [...args], { stdio: 'inherit' });
@@ -48,7 +33,7 @@ try {
   const projectVersion = /(^[ \t]+project:[^\n]*\n(?:[ \t]*\n|[ \t]+(?!version:)[^\n]+\n)*?)([ \t]+version:)[^\n]*/gm;
   const config = source.replace(projectVersion, (_match, prefix: string, key: string) => {
     replacements += 1;
-    return `${prefix}${key} "${version}"`;
+    return `${prefix}${key} "${firmwareVersion}"`;
   });
   if (replacements !== 1) throw new Error(`Expected one project.version in ${entry.config}, found ${replacements}`);
   writeFileSync(configPath, config);
@@ -60,25 +45,18 @@ try {
   const firmware = findOtaFirmware(join(work, 'config', '.esphome', 'build', entry.node), entry.node);
   console.log(`Using OTA binary: ${firmware}`);
   const content = readFileSync(firmware);
-  const manifest: FirmwareManifest = JSON.parse(
-    // Older manifests contain trailing commas before closing braces/arrays.
-    readFileSync(join(root, 'ota', entry.manifest), 'utf8').replace(/,(\s*\n\s*[}\]])/g, '$1')
-  );
-  manifest.version = version;
-  let matchingBuilds = 0;
-  for (const build of manifest.builds) {
-    if (build.ota?.path === entry.binary) {
-      build.ota.md5 = createHash('md5').update(content).digest('hex');
-      build.ota.summary = `Esphome version: ${version}`;
-      matchingBuilds += 1;
-    }
-  }
-  if (matchingBuilds !== 1) throw new Error(`Expected one matching OTA path in ${entry.manifest}`);
-  // Publish only this successful configuration and advance only its marker.
-  writeFileSync(join(root, 'ota', entry.binary), content);
-  writeFileSync(join(root, 'ota', entry.manifest), `${JSON.stringify(manifest, null, 2)}\n`);
-  mkdirSync(join(root, 'firmware-versions'), { recursive: true });
-  writeFileSync(join(root, 'firmware-versions', `${entry.config}.txt`), `${version}\n`);
+  const manifest = structuredClone(published);
+  manifest.version = firmwareVersion;
+  const ota = getOta(manifest, entry.binary);
+  ota.path = entry.binary;
+  ota.md5 = createHash('md5').update(content).digest('hex');
+  ota.summary = `Firmware ${firmwareVersion}; ESPHome ${version}`;
+  // Build artifacts are staged separately; the publisher freezes the migration files.
+  mkdirSync(join(root, 'built', 'ota'), { recursive: true });
+  writeFileSync(join(root, 'built', 'ota', entry.binary), content);
+  writeFileSync(join(root, 'built', 'ota', entry.manifest), `${JSON.stringify(manifest, null, 2)}\n`);
+  mkdirSync(join(root, 'built', 'firmware-versions'), { recursive: true });
+  writeFileSync(join(root, 'built', 'firmware-versions', `${entry.config}.txt`), `${version}\n`);
 } catch (error) {
   console.error(`Firmware build failed for ${selectedConfig} with ESPHome ${version}`, error);
   process.exitCode = 1;

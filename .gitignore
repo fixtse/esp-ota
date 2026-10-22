@@ -4,3 +4,6 @@ configs/secrets.yaml
 # Keep local backups and initial USB-flash images out of the firmware repository.
 *.bak
 *.factory.bin
+
+/built/
+/incoming/
