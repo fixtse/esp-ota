@@ -30,6 +30,7 @@ function stage(name: string, version = '2026.10.0.1') {
     path: `${name}.ota.bin`, md5: createHash('md5').update(content).digest('hex'), summary: 'built',
   } }] }));
   writeFileSync(join(incoming, 'firmware-versions', `${name}.yaml.txt`), '2026.10.0');
+  writeFileSync(join(incoming, 'firmware-versions', `${name}.yaml.source-sha256`), 'a'.repeat(64));
 }
 function publish(gh: (args: readonly string[]) => void = args => { calls.push(args); }, runId = '10') {
   return publishFirmware({ root, incoming, compiler: '2026.10.0', repository: 'fixtse/esp-ota',
@@ -90,13 +91,20 @@ test('bad checksum and empty batches never create releases', () => {
   assert.equal(calls.length, 0);
 });
 
-test('statistics aggregate immutable OTA assets and exclude drafts and factory files', () => {
+test('statistics select the latest asset per firmware across partial releases, regardless of API order', () => {
+  const release = (tag: string, date: string, assets: { name: string; download_count: number }[]) => ({
+    tag_name: `esphome-${tag}`, html_url: `https://example.com/${tag}`, draft: false, published_at: date, assets,
+  });
   const summary = downloadSummary([
-    { tag_name: 'esphome-2026.10.0-10-1', html_url: '', draft: false, assets: [{ name: 'one.ota.bin', download_count: 3 }] },
-    { tag_name: 'esphome-2026.10.0-11-1', html_url: '', draft: false, assets: [{ name: 'one.ota.bin', download_count: 4 }, { name: 'one.factory.bin', download_count: 100 }] },
-    { tag_name: 'esphome-draft', html_url: '', draft: true, assets: [{ name: 'one.ota.bin', download_count: 99 }] },
+    release('old', '2026-10-01', [{ name: 'one.ota.bin', download_count: 100 }, { name: 'two.ota.bin', download_count: 7 }]),
+    release('new', '2026-10-02', [{ name: 'one.ota.bin', download_count: 4 }, { name: 'one.factory.bin', download_count: 99 }]),
+    { ...release('draft', '2026-10-03', [{ name: 'one.ota.bin', download_count: 99 }]), draft: true },
+    { ...release('preview', '2026-10-04', [{ name: 'two.ota.bin', download_count: 99 }]), prerelease: true },
   ]);
-  assert.ok(summary.includes('| one.ota.bin | 7 |'));
-  assert.ok(!summary.includes('one.factory.bin'));
+  assert.ok(summary.includes('| one.ota.bin | [esphome-new](https://example.com/new) | 4 |'));
+  assert.ok(summary.includes('| two.ota.bin | [esphome-old](https://example.com/old) | 7 |'));
+  assert.ok(!summary.includes('factory.bin'));
   assert.ok(!summary.includes('esphome-draft'));
+  assert.ok(!summary.includes('esphome-preview'));
+  assert.ok(!summary.includes('100'));
 });

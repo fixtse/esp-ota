@@ -6,25 +6,26 @@ export interface ReleaseStatistics {
   readonly tag_name: string;
   readonly html_url: string;
   readonly draft: boolean;
+  readonly prerelease?: boolean;
+  readonly published_at: string;
   readonly assets: readonly { readonly name: string; readonly download_count: number }[];
 }
 
 export function downloadSummary(releases: readonly ReleaseStatistics[]): string {
-  const published = releases.filter(release => !release.draft && release.tag_name.startsWith('esphome-'));
-  const totals = new Map<string, number>();
-  const details: string[] = [];
+  const published = releases.filter(release => !release.draft && !release.prerelease && release.tag_name.startsWith('esphome-'))
+    .toSorted((a, b) => Date.parse(b.published_at) - Date.parse(a.published_at));
+  const latest = new Map<string, { release: ReleaseStatistics; count: number }>();
   for (const release of published) {
     for (const asset of release.assets.filter(asset => asset.name.endsWith('.ota.bin'))) {
-      totals.set(asset.name, (totals.get(asset.name) ?? 0) + asset.download_count);
-      details.push(`| ${release.tag_name} | ${asset.name} | ${asset.download_count} |`);
+      if (!latest.has(asset.name)) latest.set(asset.name, { release, count: asset.download_count });
     }
   }
   return [
     '# Firmware download statistics', '', `Updated: ${new Date().toISOString()}`, '',
-    'Counts are GitHub Release asset downloads, including retries and manual downloads. They are not unique devices or confirmed installations. Raw migration downloads are not included.', '',
-    '## Totals by firmware', '', '| Firmware | Downloads |', '| --- | ---: |',
-    ...[...totals].sort(([a], [b]) => a.localeCompare(b)).map(([name, count]) => `| ${name} | ${count} |`), '',
-    '## Per release', '', '| Release | Firmware | Downloads |', '| --- | --- | ---: |', ...details, '',
+    "Downloads of each firmware's latest published OTA asset only. Older releases and raw migration downloads are excluded. Counts include retries and manual downloads; they are not unique devices or confirmed installations.", '',
+    '| Firmware | Latest release | Downloads |', '| --- | --- | ---: |',
+    ...[...latest].sort(([a], [b]) => a.localeCompare(b)).map(([name, { release, count }]) =>
+      `| ${name} | [${release.tag_name}](${release.html_url}) | ${count} |`), '',
   ].join('\n');
 }
 

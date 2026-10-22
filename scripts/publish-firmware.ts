@@ -24,16 +24,17 @@ export function publishFirmware(options: PublishOptions): { published: number; m
   }
   const ready = loadFirmwareList(join(root, 'firmware_list.txt')).filter(entry =>
     existsSync(join(incoming, 'firmware-versions', `${entry.config}.txt`))).map(entry => {
+      const fingerprint = readFileSync(join(incoming, 'firmware-versions', `${entry.config}.source-sha256`), 'utf8').trim();
       const marker = readFileSync(join(incoming, 'firmware-versions', `${entry.config}.txt`), 'utf8').trim();
       const path = join(incoming, 'ota', entry.binary);
       const content = readFileSync(path);
       const manifest = readManifest(join(incoming, 'ota', entry.manifest));
       const ota = getOta(manifest, entry.binary);
-      if (marker !== compiler || !content.length || ota.md5 !== createHash('md5').update(content).digest('hex') ||
+      if (!/^[a-f0-9]{64}$/.test(fingerprint) || marker !== compiler || !content.length || ota.md5 !== createHash('md5').update(content).digest('hex') ||
           !new RegExp(`^${compiler.replaceAll('.', '\\.')}([.]\\d+)?$`).test(manifest.version)) {
         throw new Error(`Invalid built firmware or checksum: ${entry.config}`);
       }
-      return { entry, path, manifest, marker };
+      return { entry, path, manifest, marker, fingerprint };
     });
   if (!ready.length) return { published: 0, migrations: 0 };
 
@@ -59,7 +60,7 @@ export function publishFirmware(options: PublishOptions): { published: number; m
   let migrations = 0;
   mkdirSync(join(root, 'ota', 'releases'), { recursive: true });
   mkdirSync(join(root, 'firmware-versions'), { recursive: true });
-  for (const { entry, path, manifest, marker } of ready) {
+  for (const { entry, path, manifest, marker, fingerprint } of ready) {
     const releaseManifestPath = join(root, 'ota', 'releases', entry.manifest);
     if (!existsSync(releaseManifestPath)) {
       const bridge = structuredClone(manifest);
@@ -75,6 +76,7 @@ export function publishFirmware(options: PublishOptions): { published: number; m
     releaseOta.release_url = releaseUrl;
     writeFileSync(releaseManifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
     writeFileSync(join(root, 'firmware-versions', `${entry.config}.txt`), `${marker}\n`);
+    writeFileSync(join(root, 'firmware-versions', `${entry.config}.source-sha256`), `${fingerprint}\n`);
   }
   return { published: ready.length, migrations, release: releaseUrl };
 }

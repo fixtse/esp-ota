@@ -10,12 +10,13 @@ packages:
       on_disconnect:
         - ble.enable:
   voice_pe: !include common/voice-pe/base.yaml
+  local_alarm: !include common/voice-pe/timers-alarm.yaml
   sound_sense: !include common/sound_sense.yaml
 
 esphome:
   project:
     name: fixtse.Voice PE SoundSense
-    version: 2026.10.0.1
+    version: 2026.10.0.2
   min_version: 2026.10.0
   name: voice-pe-sound-sense
   friendly_name: Voice PE SoundSense

@@ -3,6 +3,7 @@ import { execFileSync } from 'node:child_process';
 import { cpSync, existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
+import { sourceFingerprint } from './firmware-selection.ts';
 import { findOtaFirmware } from './firmware-artifact.ts';
 
 import { getOta, loadFirmwareList, nextFirmwareVersion, readManifest } from './firmware-domain.ts';
@@ -57,6 +58,8 @@ try {
   writeFileSync(join(root, 'built', 'ota', entry.manifest), `${JSON.stringify(manifest, null, 2)}\n`);
   mkdirSync(join(root, 'built', 'firmware-versions'), { recursive: true });
   writeFileSync(join(root, 'built', 'firmware-versions', `${entry.config}.txt`), `${version}\n`);
+  writeFileSync(join(root, 'built', 'firmware-versions', `${entry.config}.source-sha256`),
+    `${sourceFingerprint(entry, path => readFileSync(join(root, path), 'utf8'))}\n`);
 } catch (error) {
   console.error(`Firmware build failed for ${selectedConfig} with ESPHome ${version}`, error);
   process.exitCode = 1;

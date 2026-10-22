@@ -43,10 +43,9 @@ jobs:
         id: release
         uses: actions/github-script@v7
         env:
-          FORCE: ${{ github.event_name == 'push' || inputs.force || false }}
+          FORCE: ${{ inputs.force || false }}
         with:
           script: |
-            const fs = require('fs');
             const { data: release } = await github.rest.repos.getLatestRelease({
               owner: 'esphome', repo: 'esphome'
             });
@@ -54,27 +53,8 @@ jobs:
             if (release.draft || release.prerelease || !/^\d{4}\.\d+\.\d+$/.test(version)) {
               throw new Error(`Unexpected stable release: ${release.tag_name}`);
             }
-            const readVersion = path => fs.existsSync(path) ? fs.readFileSync(path, 'utf8').trim() : '';
-            const legacyVersion = readVersion('.esphome-version');
-            const configurations = fs.readFileSync('firmware_list.txt', 'utf8').split(/\r?\n/)
-              .filter(line => line.trim() && !line.trim().startsWith('#'))
-              .map(line => {
-                const fields = line.split(',').map(field => field.trim());
-                if (fields.length !== 4 || fields.some(field => !/^[A-Za-z0-9_-][A-Za-z0-9_.-]*$/.test(field))) {
-                  throw new Error(`Invalid firmware list entry: ${line}`);
-                }
-                const [config, binary, manifest, node] = fields;
-                return { config, binary, manifest, node };
-              });
-            if (!configurations.length) throw new Error('Firmware list is empty');
-            for (const key of ['config', 'binary', 'manifest']) {
-              if (new Set(configurations.map(entry => entry[key])).size !== configurations.length) {
-                throw new Error(`Duplicate ${key} in firmware list`);
-              }
-            }
-            const pending = configurations.filter(entry => process.env.FORCE === 'true' ||
-              !fs.existsSync(`ota/releases/${entry.manifest}`) ||
-              (readVersion(`firmware-versions/${entry.config}.txt`) || legacyVersion) !== version);
+            const { execFileSync } = require('node:child_process');
+            const pending = JSON.parse(execFileSync('node', ['scripts/firmware-selection.ts', version], { encoding: 'utf8' }));
             core.setOutput('version', version);
             core.setOutput('build', pending.length > 0);
             core.setOutput('matrix', JSON.stringify({ include: pending }));
@@ -109,6 +89,7 @@ jobs:
             built/ota/${{ matrix.binary }}
             built/ota/${{ matrix.manifest }}
             built/firmware-versions/${{ matrix.config }}.txt
+            built/firmware-versions/${{ matrix.config }}.source-sha256
 
   publish:
     needs: [detect, build]
