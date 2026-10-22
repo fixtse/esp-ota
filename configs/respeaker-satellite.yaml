@@ -24,7 +24,7 @@ esphome:
   project:
     name: fixtse.Respeaker Lite Satellite
     version: 2026.3.1
-  min_version: 2025.7.0
+  min_version: 2026.10.0
   name: respeaker-satellite
   friendly_name: respeaker-satellite
   name_add_mac_suffix: True
@@ -985,7 +985,8 @@ script:
   - id: play_sound
     parameters:
       priority: bool
-      sound_file: "audio::AudioFile*"
+      # Script parameter types cannot contain spaces; this is const audio::AudioFile*.
+      sound_file: "std::add_const_t<audio::AudioFile>*"
     then:
       - lambda: |-
           if (priority) {
@@ -1004,26 +1005,26 @@ script:
   - id: fetch_first_active_timer
     then:
       - lambda: |
-          const auto timers = id(va).get_timers();
-          auto output_timer = timers.begin()->second;
-          for (auto &iterable_timer : timers) {
-            if (iterable_timer.second.is_active && iterable_timer.second.seconds_left <= output_timer.seconds_left) {
-              output_timer = iterable_timer.second;
+          const auto &timers = id(va).get_timers();
+          const voice_assistant::Timer *first_active = nullptr;
+          for (const auto &timer : timers) {
+            if (timer.is_active &&
+                (first_active == nullptr || timer.seconds_left < first_active->seconds_left)) {
+              first_active = &timer;
             }
           }
-          id(first_active_timer) = output_timer;
+          id(first_active_timer) = first_active != nullptr ? *first_active : voice_assistant::Timer{};
 
   # Script used to check if a timer is active (Stored in global is_timer_active)
   - id: check_if_timers_active
     then:
       - lambda: |
-          const auto timers = id(va).get_timers();
+          const auto &timers = id(va).get_timers();
           bool output = false;
-          if (timers.size() > 0) {
-            for (auto &iterable_timer : timers) {
-              if(iterable_timer.second.is_active) {
-                output = true;
-              }
+          for (const auto &timer : timers) {
+            if (timer.is_active) {
+              output = true;
+              break;
             }
           }
           id(is_timer_active) = output;
@@ -1067,7 +1068,7 @@ script:
               // Trigger action if current time matches alarm time
               auto time_now = id(homeassistant_time).now();
               if (time_now.hour == alarm_hour && time_now.minute == alarm_minute) {
-                auto action = id(alarm_action).state;
+                const auto action = id(alarm_action).current_option();
                 if (action == "Play sound") {
                   id(timer_ringing).turn_on();
                 } else if (action == "Send event") {
