@@ -1,0 +1,70 @@
+packages:
+  # Prefix the official voice trigger, so BLE releases the shared radio first.
+  va_connected_wait_for_ble:
+    voice_assistant:
+      on_client_connected:
+        - wait_until:
+            not: ble.enabled
+        - delay: 2s
+    wifi:
+      on_disconnect:
+        - ble.enable:
+  voice_pe: !include common/voice-pe/base.yaml
+  sound_sense: !include common/sound_sense.yaml
+
+esphome:
+  project:
+    name: fixtse.Voice PE SoundSense
+    version: 2026.10.0
+  min_version: 2026.10.0
+  name: voice-pe-sound-sense
+  friendly_name: Voice PE SoundSense
+  name_add_mac_suffix: true
+
+ota:
+  - platform: http_request
+    id: ota_http_request
+
+http_request:
+
+update:
+  - platform: http_request
+    name: Firmware Update
+    id: update_http_request
+    update_interval: 30min
+    source: https://raw.githubusercontent.com/fixtse/esp-ota/refs/heads/main/ota/voice-pe-sound-sense_manifest.yml
+
+dashboard_import:
+  package_import_url: github://fixtse/esp-ota/configs/voice-pe-sound-sense.yaml@main
+  import_full_config: false
+
+wifi:
+  on_connect:
+    - delay: 5s
+    - ble.disable:
+    - script.execute: control_leds
+
+improv_serial:
+
+esp32_ble:
+  name: voice-pe-ss
+
+improv_ble:
+  authorizer: center_button
+  on_start:
+    - lambda: id(improv_ble_in_progress) = true;
+    - script.execute: control_leds
+  on_provisioned:
+    - lambda: id(improv_ble_in_progress) = false;
+    - script.execute: control_leds
+  on_stop:
+    - lambda: id(improv_ble_in_progress) = false;
+    - script.execute: control_leds
+
+# The official Voice PE microphone supplies 32-bit samples, as SoundSense expects.
+microphone:
+  - id: !extend i2s_mics
+    on_data:
+      - script.execute:
+          id: process_audio_data
+          audio_data: !lambda return x;

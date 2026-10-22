@@ -1,0 +1,17 @@
+{
+  "name": "Voice PE SoundSense",
+  "version": "2026.10.0",
+  "home_assistant_domain": "esphome",
+  "new_install_prompt_erase": false,
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "ota": {
+        "md5": "f0a21174282c1e95af21884e6c491b20",
+        "path": "voice-pe-sound-sense.ota.bin",
+        "release_url": "https://github.com/fixtse/esp-ota",
+        "summary": "Voice PE with SoundSense; ESPHome 2026.10.0"
+      }
+    }
+  ]
+}

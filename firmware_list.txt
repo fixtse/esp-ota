@@ -7,3 +7,4 @@ mini-mmwave-sensor_no_bluetooth.yaml,mini_mmWave_sensor_no_bluetooth.ota.bin,min
 mini-mmwave-sensor-fix-wifi.yaml,mini_mmWave_sensor_fix_wifi.ota.bin,mini-mmwave-sensor_manifest_fix_wifi.yml,mini-mmwave-sensor
 mini-mmwave-sensor_no_bluetooth-fix-wifi.yaml,mini_mmWave_sensor_no_bluetooth_fix_wifi.ota.bin,mini-mmwave-sensor_no_bluetooth_manifest_fix_wifi.yml,mini-mmwave-sensor-no
 respeaker-satellite.yaml,respeaker-satellite.ota.bin,respeaker_lite_manifest.yml,respeaker-satellite
+voice-pe-sound-sense.yaml,voice-pe-sound-sense.ota.bin,voice-pe-sound-sense_manifest.yml,voice-pe-sound-sense
