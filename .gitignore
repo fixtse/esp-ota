@@ -7,3 +7,6 @@ configs/secrets.yaml
 
 /built/
 /incoming/
+
+# Local agent instructions
+/AGENTS.md

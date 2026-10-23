@@ -317,13 +317,13 @@ binary_sensor:
           then:
             - button.press: factory_reset_button
     on_multi_click:
-      # Simple Click:
+      # Simple Click: dismiss active device activity first; only idle clicks emit an event.
       #   - Abort "things" in order
       #     - Timer
       #     - Announcements
       #     - Voice Assistant Pipeline run
       #     - Music
-      #   - Starts the voice assistant if it is not yet running and if the device is not muted.
+      #   - When idle, emit single_press and optionally start Assist if not muted.
       - timing:
           - ON for at most 1s
           - OFF for at least 0.25s
@@ -361,9 +361,13 @@ binary_sensor:
                                         - media_player.pause:
                                             id: external_media_player
                                       else:
+                                        - event.trigger:
+                                            id: button_press_event
+                                            event_type: "single_press"
                                         - if:
                                             condition:
                                               and:
+                                                - lambda: return id(single_click_action).current_option() == "Start Assist";
                                                 - switch.is_off: master_mute_switch
                                                 - not: voice_assistant.is_running
                                             then:
@@ -413,6 +417,24 @@ binary_sensor:
                 - event.trigger:
                     id: button_press_event
                     event_type: "triple_press"
+      # Quadruple Click. Wait for release so it cannot also trigger triple press.
+      - timing:
+          - ON for at most 1s
+          - OFF for at most 0.25s
+          - ON for at most 1s
+          - OFF for at most 0.25s
+          - ON for at most 1s
+          - OFF for at most 0.25s
+          - ON for at most 1s
+          - OFF for at least 0.25s
+        then:
+          - if:
+              condition:
+                lambda: return !id(init_in_progress) && !id(color_changed) && !id(group_volume_changed) && !id(disable_buttons).state;
+              then:
+                - event.trigger:
+                    id: button_press_event
+                    event_type: "quadruple_press"
       # Long Press
       #  . Exposed as an event entity. To be used in automations inside Home Assistant
       - timing:
@@ -1054,16 +1076,17 @@ sensor:
                       increase_hue: false
 
 event:
-  # Event entity exposed to the user to automate on complex center button presses.
-  # The simple press is not exposed as it is used to control the device itself.
+  # Single press is emitted only when no active device activity consumes the click.
   - platform: template
     id: button_press_event
     name: "Button press"
     icon: mdi:button-pointer
     device_class: button
     event_types:
+      - single_press
       - double_press
       - triple_press
+      - quadruple_press
       - long_press
       - easter_egg_press
 
@@ -1797,6 +1820,17 @@ micro_wake_word:
                                 wake_word: !lambda return wake_word;
 
 select:
+  - platform: template
+    name: "Single click when idle"
+    id: single_click_action
+    icon: mdi:button-pointer
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    initial_option: "Start Assist"
+    options:
+      - "Start Assist"
+      - "Automation only"
   - platform: template
     name: "Wake word sensitivity"
     id: wake_word_sensitivity
