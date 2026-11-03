@@ -1,16 +1,16 @@
 {
   "name": "mmWave Sensor",
-  "version": "2026.10.1",
+  "version": "2026.10.2",
   "home_assistant_domain": "esphome",
   "new_install_prompt_erase": false,
   "builds": [
     {
       "chipFamily": "ESP32",
       "ota": {
-        "md5": "baf4e8bbc72dbfb01cf3c98dc720a038",
-        "path": "https://github.com/fixtse/esp-ota/releases/download/esphome-2026.10.1-40569627041-1/mmWave_sensor.ota.bin",
-        "release_url": "https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.10.1-40569627041-1",
-        "summary": "Firmware 2026.10.1; ESPHome 2026.10.1"
+        "md5": "f94aeab3a5ff5b98ee35638ed61f21e8",
+        "path": "https://github.com/fixtse/esp-ota/releases/download/esphome-2026.10.2-41561395371-1/mmWave_sensor.ota.bin",
+        "release_url": "https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.10.2-41561395371-1",
+        "summary": "Firmware 2026.10.2; ESPHome 2026.10.2"
       }
     }
   ]

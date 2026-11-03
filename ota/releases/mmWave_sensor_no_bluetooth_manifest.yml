@@ -1,16 +1,16 @@
 {
   "name": "mmWave Sensor no Bluetooth",
-  "version": "2026.10.1",
+  "version": "2026.10.2",
   "home_assistant_domain": "esphome",
   "new_install_prompt_erase": false,
   "builds": [
     {
       "chipFamily": "ESP32",
       "ota": {
-        "md5": "4f50dc1468970dae6a753d5a5bc92e0a",
-        "path": "https://github.com/fixtse/esp-ota/releases/download/esphome-2026.10.1-40569627041-1/mmWave_sensor_no_bluetooth.ota.bin",
-        "release_url": "https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.10.1-40569627041-1",
-        "summary": "Firmware 2026.10.1; ESPHome 2026.10.1"
+        "md5": "1d9c81ddb2750241f4c05f9572c302f5",
+        "path": "https://github.com/fixtse/esp-ota/releases/download/esphome-2026.10.2-41561395371-1/mmWave_sensor_no_bluetooth.ota.bin",
+        "release_url": "https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.10.2-41561395371-1",
+        "summary": "Firmware 2026.10.2; ESPHome 2026.10.2"
       }
     }
   ]
