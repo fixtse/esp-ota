@@ -1,16 +1,16 @@
 {
   "name": "ReSpeaker Satellite",
-  "version": "2026.10.2",
+  "version": "2026.10.2.1",
   "home_assistant_domain": "esphome",
   "new_install_prompt_erase": false,
   "builds": [
     {
       "chipFamily": "ESP32-S3",
       "ota": {
-        "md5": "fd2ebf1099d8df9f249648cec7cce119",
-        "path": "https://github.com/fixtse/esp-ota/releases/download/esphome-2026.10.2-41561395371-1/respeaker-satellite.ota.bin",
-        "release_url": "https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.10.2-41561395371-1",
-        "summary": "Firmware 2026.10.2; ESPHome 2026.10.2"
+        "md5": "58d8aa6ef1bd87d6790ebc00b72397bf",
+        "path": "https://github.com/fixtse/esp-ota/releases/download/esphome-2026.10.2-42525743236-1/respeaker-satellite.ota.bin",
+        "release_url": "https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.10.2-42525743236-1",
+        "summary": "Firmware 2026.10.2.1; ESPHome 2026.10.2"
       }
     }
   ]

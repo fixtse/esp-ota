@@ -1,15 +1,15 @@
 {
   "name": "OpenNextion Knob ESPHome",
-  "version": "0.0.0",
+  "version": "2026.10.2",
   "home_assistant_domain": "esphome",
   "new_install_prompt_erase": false,
   "builds": [
     {
       "chipFamily": "ESP32-S3",
       "ota": {
-        "md5": "",
+        "md5": "23479955b71f17e2ef286edf6c360c0a",
         "path": "onx2424g013.ota.bin",
-        "summary": "Bootstrap manifest; release is populated only after a successful build"
+        "summary": "Enlarged HTTP buffers; firmware 2026.10.2; ESPHome 2026.10.2"
       }
     }
   ]
