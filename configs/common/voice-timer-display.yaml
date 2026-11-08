@@ -1,0 +1,39 @@
+# Expose the next Assist timer for companion displays. Both voice bases supply
+# va and timer_ringing. Active timers take precedence over paused timers.
+json:
+
+text_sensor:
+  - platform: template
+    id: voice_timer_snapshot
+    name: "Voice timer"
+    icon: mdi:timer-outline
+    update_interval: 1s
+    lambda: |-
+      const auto &timers = id(va).get_timers();
+      const voice_assistant::Timer *next = nullptr;
+      for (const auto &timer : timers) {
+        if (next == nullptr || (timer.is_active && !next->is_active) ||
+            (timer.is_active == next->is_active && timer.seconds_left < next->seconds_left))
+          next = &timer;
+      }
+      const bool ringing = id(timer_ringing).state;
+      const char *state = ringing ? "ringing" : next == nullptr ? "idle" : next->is_active ? "active" : "paused";
+      std::string name = next == nullptr ? "" : next->name;
+      // HA entity states are limited to 255 bytes. Retry without the name if
+      // JSON escaping or a long user-supplied name exceeds that limit.
+      auto snapshot = [&]() {
+        return json::build_json([&](JsonObject root) {
+          root["schema"] = "onx.timer.v1";
+          root["state"] = state;
+          root["name"] = name;
+          root["duration"] = next == nullptr ? 0u : next->total_seconds;
+          root["remaining"] = ringing || next == nullptr ? 0u : next->seconds_left;
+          root["count"] = timers.size();
+        });
+      };
+      std::string value = snapshot();
+      if (value.size() > 255) {
+        name.clear();
+        value = snapshot();
+      }
+      return value;

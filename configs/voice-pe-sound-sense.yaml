@@ -12,6 +12,7 @@ packages:
   voice_pe: !include common/voice-pe/base.yaml
   local_alarm: !include common/voice-pe/timers-alarm.yaml
   sound_sense: !include common/sound_sense.yaml
+  timer_display: !include common/voice-timer-display.yaml
 
 esphome:
   project:

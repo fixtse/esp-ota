@@ -1,0 +1,16 @@
+{
+  "name": "OpenNextion Knob ESPHome",
+  "version": "0.0.0",
+  "home_assistant_domain": "esphome",
+  "new_install_prompt_erase": false,
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "ota": {
+        "md5": "",
+        "path": "onx2424g013.ota.bin",
+        "summary": "Bootstrap manifest; release is populated only after a successful build"
+      }
+    }
+  ]
+}

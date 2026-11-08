@@ -5,6 +5,7 @@ substitutions:
 packages:
   respeaker_satellite: !include common/respeaker-lite/base.yaml
   sound_sense: !include common/sound_sense.yaml
+  timer_display: !include common/voice-timer-display.yaml
   # Start voice processing after BLE releases the shared Wi-Fi radio.
   va_connected_wait_for_ble:
     voice_assistant:

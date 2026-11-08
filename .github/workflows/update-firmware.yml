@@ -175,3 +175,42 @@ jobs:
           chat-id: ${{ env.TELEGRAM_CHAT_ID }}
           subject: ${{ steps.failures.outputs.subject }}
           version: ${{ needs.detect.outputs.version }}
+
+  completion_callback:
+    needs: [detect, build, publish, notify]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    env:
+      CALLBACK_URL: ${{ secrets.T3_BUILD_CALLBACK_URL }}
+      BUILD_RESULTS: ${{ toJSON(needs) }}
+      BUILD_REVISION: ${{ github.sha }}
+      BUILD_BRANCH: ${{ github.ref_name }}
+      BUILD_RUN_ID: ${{ github.run_id }}
+      BUILD_RUN_ATTEMPT: ${{ github.run_attempt }}
+      BUILD_REPOSITORY: ${{ github.repository }}
+    steps:
+      - name: Resume firmware validation thread when configured
+        if: ${{ env.CALLBACK_URL != '' }}
+        shell: python
+        run: |
+          import json, os, urllib.request
+          results = json.loads(os.environ['BUILD_RESULTS'])
+          states = [item['result'] for item in results.values()]
+          status = 'cancelled' if 'cancelled' in states else 'failed' if 'failure' in states else 'succeeded'
+          repository = os.environ['BUILD_REPOSITORY']
+          run_id = os.environ['BUILD_RUN_ID']
+          payload = dict(task='esp-ota-publication', status=status, results=results,
+                         repository=repository, revision=os.environ['BUILD_REVISION'],
+                         branch=os.environ['BUILD_BRANCH'], run_id=run_id,
+                         attempt=os.environ['BUILD_RUN_ATTEMPT'],
+                         log=f'https://github.com/{repository}/actions/runs/{run_id}')
+          request = urllib.request.Request(os.environ['CALLBACK_URL'],
+              data=json.dumps(payload).encode(), headers={
+                  'User-Agent': 'esp-ota-validation/1.0', 'Content-Type': 'application/json'})
+          try:
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  print('Completion callback HTTP', response.status)
+          except Exception as error:
+              print('Completion callback failed:', type(error).__name__,
+                    'HTTP', getattr(error, 'code', 'unknown'))
+              raise SystemExit(1)
