@@ -2,9 +2,16 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`5745b04c2ef37f60e894361495732cdd67cb4d66` (source version `2026.10.2.27`).
+`7af639186d629b38d67d127de7df2e9ced36ec0b` (source version `2026.10.2.27`).
 
 This source adds:
+
+- A Home Assistant **Wi-Fi Signal** diagnostic sensor reporting RSSI in dBm
+  every 60 seconds, using the existing RSSI sensor rather than adding a duplicate.
+- A network-memory gate corrected for live hardware: 48 KB total internal free
+  RAM and a 20 KB largest block. Firmware `.25` had a 32 KB block requirement
+  that prevented all downloads on a board reporting a healthy 28 KB block.
+  Icon/artwork diagnostics now expose `waiting_for_memory` when deferred.
 
 Performance follow-up: unchanged labels, icons, and overlays avoid repeated
 redraw work. DNS/TCP/TLS and artwork body reads run in a worker task, capped at
