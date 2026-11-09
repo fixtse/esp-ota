@@ -2,9 +2,15 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`ddb114d3cd07c3ee8c84aad1dbb5701bc6e5da49` (source version `2026.10.2.13`).
+`672ac5d00badd90faa8fc3ffa8423afa76c8cf66` (source version `2026.10.2.14`).
 
 This source adds:
+
+- A refreshed orange/slate configuration website with light/dark themes and Nunito.
+- Live device previews using the same presentation model as the display, including
+  real readings, current mode symbols, media artwork, artist, volume and progress.
+- Compact entity icons, larger sensor readings, wider two-line names, and climate
+  and fan mode symbols with less instructional text competing with values.
 
 - PSRAM allocation for all NanoSVG parser and rasterizer working memory. Live
   device logs confirmed successful downloads followed by parser allocation failure
@@ -57,7 +63,9 @@ when the ESPHome compiler version has not changed. The workflow creates the actu
 OTA image, checksum, incremented release version, and published manifest after a
 successful compilation. Do not manually relabel an older binary or checksum.
 
-Validation completed for source `ddb114d3cd07c3ee8c84aad1dbb5701bc6e5da49`:
+Current revision validation and OTA publication are pending completion callbacks.
+
+Previous release validation for source `ddb114d3cd07c3ee8c84aad1dbb5701bc6e5da49`:
 
 - [Regressions](https://github.com/fixtse/OpenNextion-KNOB-ESPHome/actions/runs/42623338328)
   checked out the exact source and passed the PSRAM allocator regression, parser
