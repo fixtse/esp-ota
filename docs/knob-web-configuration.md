@@ -2,9 +2,13 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`bbcc91ac789990bcf4272b9e4b3171eeed862ec8` (source version `2026.10.2.26`).
+`91a93fdb4a9e40881aaa6211829a75e74262c276` (source version `2026.10.2.26`).
 
 This source adds:
+
+Build follow-up: run `42709933925` failed compiling the hold progress bar due to
+ESP32 integer type deduction. The pinned source fixes that expression with an
+explicit `uint32_t` type. Publication awaits the new build.
 
 - A configurable media playlist/station menu with up to eight named script or
   automation actions per media player slot. Configure it under **Playlists &
