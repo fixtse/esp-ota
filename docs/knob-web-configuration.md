@@ -2,9 +2,19 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`64450de7f97bedfe8ad52c6bc055b405d289741c` (source version `2026.10.2.15`).
+`4f24f83c2b059dcaf2dec2168ae6296982d24eb8` (source version `2026.10.2.16`).
 
 This source adds:
+
+- Flash-backed scripts and chunked HTML nonce insertion to avoid full-page heap
+  copies, selected-entity previews, and complete measured web JSON up to 16 KB.
+  The previous release's live preview was confirmed truncated at 5,119 bytes;
+  a USB log also recorded an abort after opening the website.
+
+The publisher auto-increments the actual release version from the last published
+manifest. Source version labels above are not evidence of the released version.
+
+This source also includes:
 
 - Live state/value on every main carousel entry, including light brightness,
   cover position, climate/fan mode and media playback/track.
