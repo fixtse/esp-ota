@@ -2,9 +2,15 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`f7900012c7044de2ff75bad0fc2feabc55ed8106` (source version `2026.10.2.17`).
+`2550dbfa653627566de7bdb8c3bc0708456508d4` (source version `2026.10.2.18`).
 
 This source adds:
+
+- Media presses pause/resume a loaded track, or run a configured automation/script
+  when idle. The website exposes the media binding as **When idle**.
+- Press-and-turn skips next/previous tracks; release sends no extra press. Normal
+  rotation stays on volume. Playback controls use advertised entity capabilities.
+- Idle media views clear stale artwork/artist and show **Nothing playing**.
 
 - Page-local carousel readings/context/dot pagination that animate with each page.
 - Centered Settings and sensor headings, correct scaled-icon positions, a sensor
