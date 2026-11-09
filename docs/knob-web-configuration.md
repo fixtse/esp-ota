@@ -2,7 +2,7 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`e321bae3274483745a4cd739725118a1c19b0d6c` (source version `2026.10.2.8`).
+`5cce3e14a38812dbc2cc0d550cd5627f28f5f675` (source version `2026.10.2.8`).
 
 This source adds:
 
@@ -42,5 +42,7 @@ Wi-Fi, HTTP, registry, and browser-catalogue regressions, plus ESPHome 2026.10.2
 configuration validation. The browser fixture was updated after that run to serve
 the current app script and settings API; GitHub Actions reruns it on this source
 revision. The Codespaces compilation stopped during toolchain setup without a
-usable completion record. The publication workflow must complete compilation
+usable completion record. The Native API action keys now use explicit ESPHome 2026.10 `StringRef` construction,
+with a stricter production-handler test stub covering the conversion. The publication
+workflow must complete compilation
 before creating a new OTA image or checksum. Hardware behavior remains untested.
