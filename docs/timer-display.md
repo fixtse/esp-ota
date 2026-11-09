@@ -27,4 +27,6 @@ timers. Turning the dial dismisses the popup and resumes browsing; it returns
 after ten idle seconds if still active. Settings, scheduled sleep and an explicitly
 off screen are not interrupted. The ring uses the selected media progress color
 and flashes at completion. Timer control stays on its originating system.
-This addition is committed; automatic CI and physical popup validation are pending.
+Automatic CI passed for source `f4793fc` (regression `42672743885`, attempt 2).
+Release `.21` was published and installed on the knob; physical popup and completion
+flashing behavior remain unverified.

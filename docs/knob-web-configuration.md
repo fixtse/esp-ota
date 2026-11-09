@@ -16,8 +16,9 @@ This source adds:
 - Saved DD-MM / MM-DD / YYYY-MM-DD date preferences and 12/24-hour clocks in
   Device settings, shared by forecast dates and the standby screen. Existing
   display preferences are preserved; older backups receive DD-MM/24-hour defaults.
-  Latest automatic validation is pending; `.19` evidence below is for the earlier
-  weather release and does not verify these additions.
+  Latest automatic validation passed: regression `42672743885` attempt 2 for
+  source `f4793fc`, and publication run `42674661169` for OTA pin `df7457b`.
+  Both earlier attempts were interrupted by a GitHub Actions/Checks outage.
 
 - Dial-selectable weather pages: current temperature/condition/feels-like/humidity,
   wind/pressure/visibility/UV, and up to five daily forecast pages with high/low
@@ -153,3 +154,27 @@ Previous release validation completed for source `2550dbfa653627566de7bdb8c3bc07
 
 [Published firmware](https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.10.2-42662943568-1).
 The user confirmed the physical media press/turn gestures work on `.17`.
+
+## Latest verified publication
+
+Recovery run `42674661169` compiled exact source
+`f4793fc86cf6836a47e8905cb8d980e2d7e309ca` and published actual release
+`2026.10.2.21` (publisher commit `b3d0a8f`). The downloaded released OTA image
+matches manifest MD5 `17b128f8b09da614c67ce113d744a8f2`.
+SHA-256: `832a1e1d4ec15f54ab404f16a48b94b3389abf3602e68d4c2a323d496e5fada8`.
+The failed original run's unpublished artifact has different bytes and was not
+used for this installation. Hardware verification is recorded separately below.
+
+### Physical installation of `.21`
+
+The device at `192.168.10.52` pulled the verified release URL. USB/native logs
+recorded “Update complete” after 43 seconds and a software restart into the OTA
+partition. Its web state then reported `2026.10.2.21`, Wi-Fi and HA connected.
+Saved media color `#F97316` and main-only standby persisted; new date/clock settings
+reported DD-MM and 24 hour. Complete live weather JSON showed `15°C`, carousel
+name `Home`, and condition-aware `mdi:weather-night`.
+
+USB evidence: `/tmp/onx-usb-crash-42674661169.log`; native OTA log:
+`/tmp/onx-usb-update-42674661169.log`. No fresh panic/backtrace was found in the
+captured startup. This confirms installation and live state, not physical dial
+pagination, timer popups/completion flashing, or daily forecast retrieval.
