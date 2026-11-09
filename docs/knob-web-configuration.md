@@ -2,9 +2,16 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`7af639186d629b38d67d127de7df2e9ced36ec0b` (source version `2026.10.2.27`).
+`e67b45a607d3ab27ad8b58dfc4ebd8d3138c671f` (source version `2026.10.2.27`).
 
 This source adds:
+
+- mbedTLS allocations in PSRAM. A live Native API log on `.25` showed
+  `mbedtls_ssl_setup returned -0x7F00` while fetching the GitHub OTA manifest,
+  including after one clean restart. This is an allocation failure before
+  update discovery, not evidence that the published manifest is missing.
+  This correction must be installed before its memory benefit is available;
+  an already blocked HTTP-only OTA path may require one USB recovery flash.
 
 - A Home Assistant **Wi-Fi Signal** diagnostic sensor reporting RSSI in dBm
   every 60 seconds, using the existing RSSI sensor rather than adding a duplicate.
