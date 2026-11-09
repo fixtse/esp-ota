@@ -2,9 +2,13 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`4f24f83c2b059dcaf2dec2168ae6296982d24eb8` (source version `2026.10.2.16`).
+`f7900012c7044de2ff75bad0fc2feabc55ed8106` (source version `2026.10.2.17`).
 
 This source adds:
+
+- Page-local carousel readings/context/dot pagination that animate with each page.
+- Centered Settings and sensor headings, correct scaled-icon positions, a sensor
+  detail icon below the value, and larger gaps between icons, values and names.
 
 - Flash-backed scripts and chunked HTML nonce insertion to avoid full-page heap
   copies, selected-entity previews, and complete measured web JSON up to 16 KB.
@@ -82,22 +86,18 @@ successful compilation. Do not manually relabel an older binary or checksum.
 
 Current revision validation and OTA publication are pending completion callbacks.
 
-Previous release validation for source `ddb114d3cd07c3ee8c84aad1dbb5701bc6e5da49`:
+Previous release `2026.10.2.15` validation:
 
-- [Regressions](https://github.com/fixtse/OpenNextion-KNOB-ESPHome/actions/runs/42623338328)
-  checked out the exact source and passed the PSRAM allocator regression, parser
-  and download handling, icon resolution and browser metadata sync, command state,
-  settings input routing, recovery, Wi-Fi lifecycle, HTTP, registry and mobile UI.
-- [OTA build and publication](https://github.com/fixtse/esp-ota/actions/runs/42623390495)
-  checked out `089d42ccf9b08e68d81621df34c348ad52600dcd` at
-  `/home/runner/work/esp-ota/esp-ota`, imported the exact source revision above,
-  compiled with ESPHome 2026.10.2, and published firmware `2026.10.2.13`.
-- Downloaded binary MD5 matches manifest `e9d1360247d680bcc8077bec8993e30a`;
-  SHA-256 is `605549f80b60b6a0704b6676f0e6e584c0dc1429c61fe0b3dc405872e7eb5839`.
-
-[Published firmware](https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.10.2-42623390495-1).
-Physical device validation: the first update attempt rolled back after a panic.
-A subsequent update booted `2026.10.2.13`; the live icon diagnostics reported
-`mdi:weather-fog` selected and `ready` with no download error, and the user confirmed
-the correct icon appeared on the display. The initial panic has not been diagnosed;
-retain that limitation when assessing startup reliability.
+- [Regressions](https://github.com/fixtse/OpenNextion-KNOB-ESPHome/actions/runs/42631731689)
+  checked out exact source `4f24f83c2b059dcaf2dec2168ae6296982d24eb8` and passed
+  HTTP flash-backed assets and complete large responses, display models, scoped
+  standby, integer volume, icon downloads and browser/mobile settings tests.
+- [Build/publication](https://github.com/fixtse/esp-ota/actions/runs/42631784843)
+  checked out `9d564a75ba7503b95ccce368ead63b5f576fbfe3`, imported that exact source,
+  compiled with ESPHome 2026.10.2 and published actual release `2026.10.2.15`.
+- Downloaded binary matches manifest MD5 `f9618cce8b47698e07f3d033b1efa7b0`
+  and GitHub SHA-256 `9fc6c4699b7bf272f18fcdf7ad3857cfed72fff20d57f478cdd8ecac94659f6e`.
+- Physical device completed OTA with USB capture, booted `.15`, returned complete
+  selected-entity preview JSON, and loaded the real browser UI with live readings.
+  The user confirmed the website works. New layout feedback is addressed by the
+  pending source above; carousel animation/padding still require hardware confirmation.
