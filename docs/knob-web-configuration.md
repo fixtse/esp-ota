@@ -2,12 +2,16 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`e4a799b16ac834068675fd50d27b51862af6eca1` (source version `2026.10.2.27`).
+`5745b04c2ef37f60e894361495732cdd67cb4d66` (source version `2026.10.2.27`).
 
 This source adds:
 
 Performance follow-up: unchanged labels, icons, and overlays avoid repeated
-redraw work. Icons prefetch after input settles into the existing bounded RAM
+redraw work. DNS/TCP/TLS and artwork body reads run in a worker task, capped at
+512 KB of PSRAM, three redirects and a 15-second deadline. Final image decoding
+stays on the main task. HTTP diagnostics expose Wi-Fi RSSI, disconnect counts,
+and the last artwork error so reception and image failures can be distinguished.
+Icons prefetch after input settles into the existing bounded RAM
 cache (not persistent across reboot). Artwork stays provider-independent, uses
 shorter request timeouts, waits for stable metadata and sufficient internal heap,
 and cancels on unavailable playback. Download callbacks defer view refresh until
