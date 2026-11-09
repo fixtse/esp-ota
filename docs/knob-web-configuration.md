@@ -2,9 +2,16 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`5091950933fefecd89d7eff370f4bcfc9271f859` (source version `2026.10.2.20`).
+`d257b6966fec6797987dd3c4d79feb2f2911196b` (source version `2026.10.2.21`).
 
 This source adds:
+
+- Dial-selectable weather pages: current temperature/condition/feels-like/humidity,
+  wind/pressure/visibility/UV, and up to five daily forecast pages with high/low
+  temperatures and rain probability. Press requests a forecast refresh through
+  Home Assistant's native action response; no device access token is needed.
+  Providers without daily forecasts show unavailable data. Requests are bounded
+  to once per 20 seconds, with a 15-minute cache on reopening.
 
 - Larger 40 px carousel icons with adjusted value/context spacing. Climate retains
   its centered mode heading without a separate icon.
@@ -14,7 +21,17 @@ This source adds:
   the selected preset, fan or swing mode; temperature controls keep HVAC cycling.
 
 Codespaces validation was explicitly skipped for this revision at the user's
-request. Automatic GitHub build/regression results are pending completion callbacks.
+request. Automatic regression run `42667951801` passed for preceding source `4562176`. OTA build
+`42668030732` compiled that source and published actual release `2026.10.2.19`
+from pin `6c889ea464ff08df5170283964a9e38e6d43166d`.
+Downloaded OTA MD5: `198c7645ef09ed9789ed7c459e8ae7b2` (matches manifest).
+SHA-256: `b433396d965528a376f25e9cf9fd7e5e7c1f894f990ed59ce7052b2574041fa9`.
+The `.19` firmware was installed on `192.168.10.52`; USB recorded OTA completion
+and restart, and web state confirmed `.19` with Home Assistant connected and
+uptime above 60 seconds. Live weather JSON returned current temperature,
+condition, feels-like and humidity. This exposed a carousel icon/name regression,
+fixed in the currently pinned followup source above (validation pending).
+Daily forecast retrieval and physical dial pagination remain unverified.
 
 - Media presses pause/resume a loaded track, or run a configured automation/script
   when idle. The website exposes the media binding as **When idle**.
