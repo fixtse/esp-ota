@@ -37,12 +37,17 @@ when the ESPHome compiler version has not changed. The workflow creates the actu
 OTA image, checksum, incremented release version, and published manifest after a
 successful compilation. Do not manually relabel an older binary or checksum.
 
-Codespaces validation passed the native command-state, production entity-handler,
-Wi-Fi, HTTP, registry, and browser-catalogue regressions, plus ESPHome 2026.10.2
-configuration validation. The browser fixture was updated after that run to serve
-the current app script and settings API; GitHub Actions reruns it on this source
-revision. The Codespaces compilation stopped during toolchain setup without a
-usable completion record. The Native API action keys now use explicit ESPHome 2026.10 `StringRef` construction,
-with a stricter production-handler test stub covering the conversion. The publication
-workflow must complete compilation
-before creating a new OTA image or checksum. Hardware behavior remains untested.
+Validation completed for source `5cce3e14a38812dbc2cc0d550cd5627f28f5f675`:
+
+- [Source regressions](https://github.com/fixtse/OpenNextion-KNOB-ESPHome/actions/runs/42600437750)
+  passed command-state and production-handler checks, Wi-Fi lifecycle, HTTP,
+  registry persistence, browser discovery, and configuration UI/mobile tests.
+- [OTA publication](https://github.com/fixtse/esp-ota/actions/runs/42600467747),
+  built from OTA checkout `cab95093af0a4c2bb941420fb9ea4ba33efd82d9`, successfully
+  compiled with ESPHome 2026.10.2 and published firmware `2026.10.2.8`.
+- The downloaded release binary matches manifest MD5
+  `c9e16900612b90c180446041b87ba407` and release SHA-256
+  `bac0fd2d38f80d73604eecf5b37afe40e1c5b353655a6c68b22aab4a10d647ac`.
+
+[Published firmware release](https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.10.2-42600467747-1).
+Hardware and live Home Assistant behavior remain untested.
