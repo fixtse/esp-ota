@@ -45,7 +45,18 @@ when the ESPHome compiler version has not changed. The workflow creates the actu
 OTA image, checksum, incremented release version, and published manifest after a
 successful compilation. Do not manually relabel an older binary or checksum.
 
-The source revision above is queued for native and browser regression checks and
-ESPHome 2026.10.2 compilation through the publication workflow. No old OTA image
-has been relabeled as this release. The workflow updates binaries and manifests
-only after compilation succeeds. Hardware behavior remains untested.
+Validation completed for source `0ae25222712f54bbfc4220243b465efbd29af731`:
+
+- [Regressions](https://github.com/fixtse/OpenNextion-KNOB-ESPHome/actions/runs/42609651908)
+  passed the production entity handlers, recovery scheduling and backpressure,
+  legacy credential cleanup, media progress, MDI selection, SVG rasterization,
+  Wi-Fi lifecycle, HTTP, registry persistence, and browser/mobile configuration.
+- [OTA build and publication](https://github.com/fixtse/esp-ota/actions/runs/42609735065)
+  checked out `6336285f2ac971badb2ba2524812a60344f13e9a`, imported the exact source
+  revision above, compiled with ESPHome 2026.10.2, and published firmware `2026.10.2.9`.
+- The downloaded release binary matches manifest MD5
+  `f37f9f5118e68be180f37beac12964e8` and release SHA-256
+  `3bc3f1a17f0c8df833e96179fba23e702b2cfde8b2c707b18781f41888dbdb32`.
+
+[Published firmware](https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.10.2-42609735065-1).
+Hardware and live Home Assistant behavior remain untested.
