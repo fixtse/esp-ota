@@ -2,14 +2,27 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`b02339ab14c2a2b5ea6d98f681b098b5295ada33` (source version `2026.10.2.24`).
+`796279b2730b9aaeb0a6861c5a5631ae13993d1e` (source version `2026.10.2.25`).
 
 This source adds:
+
+- Optional secondary sensor entity with text templates `{value}`, `{unit}`,
+  `{relative}`, `{time}`, `{date}`, `{datetime}`. Example: `Resets {relative} ({time})`.
+- Optional 12-hour numeric graph for opened sensors, using bounded Recorder
+  statistics where available and a live ten-minute history cache otherwise.
+  Secondary information is small below the graph. Gaps are not interpolated.
+- Independent AM/PM display for 12-hour clocks, with migration of existing date
+  preferences. Backup defaults preserve older configurations. Regression runs
+  were skipped per user preference; compilation and physical verification pending.
 
 - OpenNextion Knob by fixtSE branding: supplied logo served from flash, browser
   knob favicon, and a footer link to https://fixtse.com/. README branding updated.
   Regression tests were explicitly skipped for this branding change at the user's
-  request. Firmware compilation/publication is separate and pending its callback.
+  request. Firmware compilation/publication passed in run `42676763668` for exact source
+  `b02339ab14c2a2b5ea6d98f681b098b5295ada33`, pin `0e82cd5`.
+  Actual release `.22` has verified MD5 `91efb5a94f8441edb17e598c89d5cb08`
+  and SHA-256 `7ca58b9f8faba141be2e3034dda803aefffe7d488ee5b83e6320fd40d1e15f4f`.
+  Physical branding validation is recorded after installation below.
 
 - Automatic timer popups for configured `timer.*`, Voice timer JSON sensors and
   Google Home timers sensors. Dial movement dismisses the popup; after ten idle
@@ -183,3 +196,12 @@ USB evidence: `/tmp/onx-usb-crash-42674661169.log`; native OTA log:
 `/tmp/onx-usb-update-42674661169.log`. No fresh panic/backtrace was found in the
 captured startup. This confirms installation and live state, not physical dial
 pagination, timer popups/completion flashing, or daily forecast retrieval.
+
+### Branding `.22` device verification
+
+Release `.22` was installed on `192.168.10.52` with USB capture in
+`/tmp/onx-usb-crash-42676763668.log`. The live page returned the branded title,
+footer link and favicon. `/knob/fixtse-logo.png` returned image/png with 23,057
+bytes exactly matching the supplied original. Logo SHA-256:
+`7c0ac1bca92a009c9e20a27659f1aa57bc1e42499f7a6be8cc56e6b11df35360`.
+The new secondary sensor/graph source above is not covered by that evidence.
