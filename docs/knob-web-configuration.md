@@ -2,9 +2,20 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`796279b2730b9aaeb0a6861c5a5631ae13993d1e` (source version `2026.10.2.25`).
+`bbcc91ac789990bcf4272b9e4b3171eeed862ec8` (source version `2026.10.2.26`).
 
 This source adds:
+
+- A configurable media playlist/station menu with up to eight named script or
+  automation actions per media player slot. Configure it under **Playlists &
+  stations** on the knob webpage. Names, actions, and order persist in backups.
+- A visible hold bar and **Release now / Open playlists** cue at 0.5 seconds.
+  Rotate through the list and press to send the selected action. Medium-press
+  again to return to playback; holding for 1.5 seconds returns to devices.
+  Existing short-press playback and press-and-turn transport remain available.
+- This source was committed without Codespaces or regression runs at the user's
+  request. Compilation and publication are handled by the OTA build workflow;
+  no successful firmware build is claimed here.
 
 - Optional secondary sensor entity with text templates `{value}`, `{unit}`,
   `{relative}`, `{time}`, `{date}`, `{datetime}`. Example: `Resets {relative} ({time})`.
