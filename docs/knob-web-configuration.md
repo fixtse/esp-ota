@@ -2,7 +2,7 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`efb7686fbd67ed824571a750763167b26f4b38b5` (source version `2026.10.2.15`).
+`64450de7f97bedfe8ad52c6bc055b405d289741c` (source version `2026.10.2.15`).
 
 This source adds:
 
