@@ -2,9 +2,17 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`5cce3e14a38812dbc2cc0d550cd5627f28f5f675` (source version `2026.10.2.8`).
+`ab815c1cece30f097f5c5f1a75d2ccb2c0e05021` (source version `2026.10.2.9`).
 
 This source adds:
+
+- Downloaded Home Assistant MDI icons, background SVG rendering, a bounded RAM
+  cache, and built-in entity-type fallbacks when icons cannot be downloaded.
+- A circular media playback progress ring with pause, seek, and track-change handling.
+- Automatic missing-entity retries, on-device retry, and browser-triggered Native API
+  reconnection without rebooting or replaying old commands.
+- Removal of long-lived device tokens, token-status and usage sensors, and legacy
+  QR-code menus. Upgrades erase the previously saved device credential.
 
 - Fan, number/input_number, select/input_select, scene, and button controls.
 - A shared requested/pending/confirmed command layer with bounded rotation updates,
@@ -37,17 +45,7 @@ when the ESPHome compiler version has not changed. The workflow creates the actu
 OTA image, checksum, incremented release version, and published manifest after a
 successful compilation. Do not manually relabel an older binary or checksum.
 
-Validation completed for source `5cce3e14a38812dbc2cc0d550cd5627f28f5f675`:
-
-- [Source regressions](https://github.com/fixtse/OpenNextion-KNOB-ESPHome/actions/runs/42600437750)
-  passed command-state and production-handler checks, Wi-Fi lifecycle, HTTP,
-  registry persistence, browser discovery, and configuration UI/mobile tests.
-- [OTA publication](https://github.com/fixtse/esp-ota/actions/runs/42600467747),
-  built from OTA checkout `cab95093af0a4c2bb941420fb9ea4ba33efd82d9`, successfully
-  compiled with ESPHome 2026.10.2 and published firmware `2026.10.2.8`.
-- The downloaded release binary matches manifest MD5
-  `c9e16900612b90c180446041b87ba407` and release SHA-256
-  `bac0fd2d38f80d73604eecf5b37afe40e1c5b353655a6c68b22aab4a10d647ac`.
-
-[Published firmware release](https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.10.2-42600467747-1).
-Hardware and live Home Assistant behavior remain untested.
+The source revision above is queued for native and browser regression checks and
+ESPHome 2026.10.2 compilation through the publication workflow. No old OTA image
+has been relabeled as this release. The workflow updates binaries and manifests
+only after compilation succeeds. Hardware behavior remains untested.
