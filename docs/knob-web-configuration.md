@@ -2,9 +2,14 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`f4793fc86cf6836a47e8905cb8d980e2d7e309ca` (source version `2026.10.2.23`).
+`b02339ab14c2a2b5ea6d98f681b098b5295ada33` (source version `2026.10.2.24`).
 
 This source adds:
+
+- OpenNextion Knob by fixtSE branding: supplied logo served from flash, browser
+  knob favicon, and a footer link to https://fixtse.com/. README branding updated.
+  Regression tests were explicitly skipped for this branding change at the user's
+  request. Firmware compilation/publication is separate and pending its callback.
 
 - Automatic timer popups for configured `timer.*`, Voice timer JSON sensors and
   Google Home timers sensors. Dial movement dismisses the popup; after ten idle
