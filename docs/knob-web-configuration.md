@@ -13,7 +13,12 @@ This source adds:
   Secondary information is small below the graph. Gaps are not interpolated.
 - Independent AM/PM display for 12-hour clocks, with migration of existing date
   preferences. Backup defaults preserve older configurations. Regression runs
-  were skipped per user preference; compilation and physical verification pending.
+  were skipped per user preference. Run `42681057723` compiled exact source
+  `796279b2730b9aaeb0a6861c5a5631ae13993d1e` and published actual `.23` from
+  OTA pin `116b37f`. Downloaded release MD5 `fe833dc86982db53e0bccefc111a50db`
+  matches its manifest; SHA-256 is
+  `fc6c3bca0db190d0492387efe560c25680e2bf4aa7b6194ad0bf9b504e7f4c72`.
+  Physical checks are recorded separately after installation.
 
 - OpenNextion Knob by fixtSE branding: supplied logo served from flash, browser
   knob favicon, and a footer link to https://fixtse.com/. README branding updated.
@@ -205,3 +210,19 @@ footer link and favicon. `/knob/fixtse-logo.png` returned image/png with 23,057
 bytes exactly matching the supplied original. Logo SHA-256:
 `7c0ac1bca92a009c9e20a27659f1aa57bc1e42499f7a6be8cc56e6b11df35360`.
 The new secondary sensor/graph source above is not covered by that evidence.
+
+### Physical installation of `.23`
+
+USB/native evidence (`/tmp/onx-usb-crash-42681057723.log` and
+`/tmp/onx-usb-update-42681057723.log`) recorded completion after 43 seconds and
+restart. Web state reported `.23`, HA connected and uptime above 115 seconds.
+Existing 12-hour preferences migrated with AM/PM enabled.
+
+Configured slot 1's existing Codex sensor with secondary entity
+`sensor.openai_codex_5_hour_reset` and text `Resets {relative} ({time})`.
+Live device JSON confirmed `Resets in 2 hours (11:10 PM)` on both main and detail
+models. Disabling AM/PM produced `Resets in 2 hours (11:10)`; the original setting
+was restored. Value mode remains selected. Graph configuration saved, but the
+immediate graph previews occurred during HA resubscription and returned waiting
+for data. Graph drawing and Recorder history retrieval remain physically
+unverified; compilation success is not evidence of their runtime behavior.
