@@ -2,9 +2,14 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`fa27d9ba78af45f3b042023282d8189e1f75560c` (source version `2026.10.2.22`).
+`f4793fc86cf6836a47e8905cb8d980e2d7e309ca` (source version `2026.10.2.23`).
 
 This source adds:
+
+- Automatic timer popups for configured `timer.*`, Voice timer JSON sensors and
+  Google Home timers sensors. Dial movement dismisses the popup; after ten idle
+  seconds it returns while active. Rings share the media color and flash on
+  completion. Popup behavior and Google Home parsing await hardware validation.
 
 - Condition-aware weather carousel icons, respecting Home Assistant's supplied
   icon and explicit user overrides.

@@ -16,3 +16,15 @@ knob. This does not create HA timer helpers for Assist's internal timers.
 The knob build is `configs/onx2424g013.yaml` and imports source packages from
 https://github.com/fixtse/OpenNextion-KNOB-ESPHome. Update its pinned package ref
 when releasing new knob source; this also changes its firmware fingerprint.
+
+## Automatic display
+
+Configured timer slots now surface automatically: native HA `timer.*` helpers,
+Voice PE/SoundSense timer sensors, and Google Home timers sensors. Google Home's
+`timers` attribute is adapted into the countdown view without a device token.
+Ringing timers take priority, followed by the earliest running timer, then paused
+timers. Turning the dial dismisses the popup and resumes browsing; it returns
+after ten idle seconds if still active. Settings, scheduled sleep and an explicitly
+off screen are not interrupted. The ring uses the selected media progress color
+and flashes at completion. Timer control stays on its originating system.
+This addition is committed; automatic CI and physical popup validation are pending.
