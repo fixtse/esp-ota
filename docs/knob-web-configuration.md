@@ -57,22 +57,22 @@ when the ESPHome compiler version has not changed. The workflow creates the actu
 OTA image, checksum, incremented release version, and published manifest after a
 successful compilation. Do not manually relabel an older binary or checksum.
 
-Current revision validation and OTA publication are pending completion callbacks.
+Validation completed for source `ddb114d3cd07c3ee8c84aad1dbb5701bc6e5da49`:
 
-Previous release validation for source `4d0006e13893d5e7c0beb42cca58a0bcc78cc879`:
-
-- [Regressions](https://github.com/fixtse/OpenNextion-KNOB-ESPHome/actions/runs/42620363297)
-  checked out that exact source and passed production entity handlers, transient
-  feedback expiry, settings input routing, recovery, media progress, icon selection,
-  chunked download/fallback/retry handling, SVG rasterization, Wi-Fi lifecycle,
-  HTTP, registry persistence, automatic icon metadata sync, and browser/mobile UI.
-- [OTA build and publication](https://github.com/fixtse/esp-ota/actions/runs/42620407241)
-  checked out `a2195b045e8bda8011f6dffea4ae14d4ec5a099d` at
+- [Regressions](https://github.com/fixtse/OpenNextion-KNOB-ESPHome/actions/runs/42623338328)
+  checked out the exact source and passed the PSRAM allocator regression, parser
+  and download handling, icon resolution and browser metadata sync, command state,
+  settings input routing, recovery, Wi-Fi lifecycle, HTTP, registry and mobile UI.
+- [OTA build and publication](https://github.com/fixtse/esp-ota/actions/runs/42623390495)
+  checked out `089d42ccf9b08e68d81621df34c348ad52600dcd` at
   `/home/runner/work/esp-ota/esp-ota`, imported the exact source revision above,
-  compiled with ESPHome 2026.10.2, and published firmware `2026.10.2.12`.
-- The downloaded release binary matches manifest MD5
-  `9e6ee69242288c0af5d2363c097e3b6d` and release SHA-256
-  `77a2692c95066c69607a48082017dda231687e53de4e202cd810665f64351319`.
+  compiled with ESPHome 2026.10.2, and published firmware `2026.10.2.13`.
+- Downloaded binary MD5 matches manifest `e9d1360247d680bcc8077bec8993e30a`;
+  SHA-256 is `605549f80b60b6a0704b6676f0e6e584c0dc1429c61fe0b3dc405872e7eb5839`.
 
-[Published firmware](https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.10.2-42620407241-1).
-Hardware and live Home Assistant behavior remain untested.
+[Published firmware](https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.10.2-42623390495-1).
+Physical device validation: the first update attempt rolled back after a panic.
+A subsequent update booted `2026.10.2.13`; the live icon diagnostics reported
+`mdi:weather-fog` selected and `ready` with no download error, and the user confirmed
+the correct icon appeared on the display. The initial panic has not been diagnosed;
+retain that limitation when assessing startup reliability.
