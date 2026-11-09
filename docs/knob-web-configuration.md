@@ -2,9 +2,14 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`e67b45a607d3ab27ad8b58dfc4ebd8d3138c671f` (source version `2026.10.2.27`).
+`57ac77497eea5afdf31b56fcbab2295163b7edb1` (source version `2026.10.2.27`).
 
 This source adds:
+
+- A bundled checkmark icon for executable entity presses, shown for 900ms with
+  no text toast. It appears after action dispatch or local GPIO completion,
+  not for navigation, unsupported presses or **No action** bindings. Dispatch
+  feedback does not claim downstream script/playback success.
 
 - mbedTLS allocations in PSRAM. A live Native API log on `.25` showed
   `mbedtls_ssl_setup returned -0x7F00` while fetching the GitHub OTA manifest,
