@@ -2,9 +2,15 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`4d0006e13893d5e7c0beb42cca58a0bcc78cc879` (source version `2026.10.2.12`).
+`ddb114d3cd07c3ee8c84aad1dbb5701bc6e5da49` (source version `2026.10.2.13`).
 
 This source adds:
+
+- PSRAM allocation for all NanoSVG parser and rasterizer working memory. Live
+  device logs confirmed successful downloads followed by parser allocation failure
+  on the previous firmware, despite ample external RAM.
+- Home Assistant integration and device-class icon resolution, native sensor
+  device-class defaults, and per-slot selected-icon/download diagnostics.
 
 - Temporary command feedback expires and restores media artist/entity metadata.
 - Saved-slot MDI metadata syncs automatically when the browser catalogue refreshes.
@@ -51,7 +57,9 @@ when the ESPHome compiler version has not changed. The workflow creates the actu
 OTA image, checksum, incremented release version, and published manifest after a
 successful compilation. Do not manually relabel an older binary or checksum.
 
-Validation completed for source `4d0006e13893d5e7c0beb42cca58a0bcc78cc879`:
+Current revision validation and OTA publication are pending completion callbacks.
+
+Previous release validation for source `4d0006e13893d5e7c0beb42cca58a0bcc78cc879`:
 
 - [Regressions](https://github.com/fixtse/OpenNextion-KNOB-ESPHome/actions/runs/42620363297)
   checked out that exact source and passed production entity handlers, transient
