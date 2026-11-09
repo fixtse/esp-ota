@@ -2,9 +2,17 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`50bc4131d222fcdb9be1a4a9419ca487cc2a3f3f` (source version `2026.10.2.7`).
+`db2af148e8bc552cc8647253b75e70fc26586a41` (source version `2026.10.2.8`).
 
 This source adds:
+
+- Fan, number/input_number, select/input_select, scene, and button controls.
+- A shared requested/pending/confirmed command layer with bounded rotation updates,
+  timeouts, and cancellation when leaving a view or losing the HA connection.
+- Climate HVAC mode parsing for Native API list attributes, local accumulation of
+  temperature changes, independent range endpoints, presets, fan, swing, and humidity.
+- Capability-dependent secondary settings selected by holding and rotating the knob.
+- Media source/mute settings and 100-step light color-temperature adjustment.
 
 - Separate knob, Home Assistant API, and browser catalogue connection indicators.
 - Slot dirty markers, save all, discard, reload recovery, and unsaved-change prompts.
@@ -29,5 +37,10 @@ when the ESPHome compiler version has not changed. The workflow creates the actu
 OTA image, checksum, incremented release version, and published manifest after a
 successful compilation. Do not manually relabel an older binary or checksum.
 
-Regression tests were not run manually for this source update. The existing
-workflow retains its normal publication checks and firmware compilation.
+Codespaces validation passed the native command-state, production entity-handler,
+Wi-Fi, HTTP, registry, and browser-catalogue regressions, plus ESPHome 2026.10.2
+configuration validation. The browser fixture was updated after that run to serve
+the current app script and settings API; GitHub Actions reruns it on this source
+revision. The Codespaces compilation stopped during toolchain setup without a
+usable completion record. The publication workflow must complete compilation
+before creating a new OTA image or checksum. Hardware behavior remains untested.
