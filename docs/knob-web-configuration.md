@@ -2,9 +2,15 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`57ac77497eea5afdf31b56fcbab2295163b7edb1` (source version `2026.10.2.27`).
+`60f3c8e5a2c09eca81690de13a180d07f1c5a418` (source version `2026.10.2.27`).
 
 This source adds:
+
+- Separate artwork memory limits matched to its 12 KB worker stack (32 KB total
+  free internal RAM, 14 KB largest block). Live `.28` reported a 16 KB block and
+  was incorrectly held by the icon worker's 20 KB gate despite healthy playback
+  metadata. JPEG decoder MCU/Huffman workspace objects use checked PSRAM
+  allocation, preserving internal RAM for worker stacks and networking.
 
 - A bundled checkmark icon for executable entity presses, shown for 900ms with
   no text toast. It appears after action dispatch or local GPIO completion,
