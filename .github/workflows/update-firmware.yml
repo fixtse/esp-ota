@@ -191,9 +191,11 @@ jobs:
     steps:
       - name: Resume firmware validation thread when configured
         if: ${{ env.CALLBACK_URL != '' }}
+        # Delivery is best effort; upstream jobs determine the firmware result.
+        continue-on-error: true
         shell: python
         run: |
-          import json, os, urllib.request
+          import json, os, time, urllib.error, urllib.request
           results = json.loads(os.environ['BUILD_RESULTS'])
           states = [item['result'] for item in results.values()]
           status = 'cancelled' if 'cancelled' in states else 'failed' if 'failure' in states else 'succeeded'
@@ -207,10 +209,19 @@ jobs:
           request = urllib.request.Request(os.environ['CALLBACK_URL'],
               data=json.dumps(payload).encode(), headers={
                   'User-Agent': 'esp-ota-validation/1.0', 'Content-Type': 'application/json'})
-          try:
-              with urllib.request.urlopen(request, timeout=30) as response:
-                  print('Completion callback HTTP', response.status)
-          except Exception as error:
-              print('Completion callback failed:', type(error).__name__,
-                    'HTTP', getattr(error, 'code', 'unknown'))
-              raise SystemExit(1)
+          for attempt in range(1, 5):
+              try:
+                  with urllib.request.urlopen(request, timeout=30) as response:
+                      print('Completion callback HTTP', response.status)
+                  break
+              except Exception as error:
+                  code = getattr(error, 'code', None)
+                  retryable = (code in (408, 429) or code is not None and 500 <= code < 600
+                               or code is None and isinstance(error, (urllib.error.URLError, TimeoutError, OSError)))
+                  print(f'Completion callback attempt {attempt}/4 failed:',
+                        type(error).__name__, 'HTTP', code or 'unknown')
+                  if attempt == 4 or not retryable:
+                      print('::warning::Completion callback delivery failed; see callback job logs. '
+                            'Firmware outcome is determined by the upstream jobs.')
+                      raise SystemExit(1)
+                  time.sleep(2 ** attempt)
