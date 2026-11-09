@@ -2,9 +2,12 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`173743daf97211dd730bd835bcffc4624b3b9644` (source version `2026.10.2.19`).
+`5091950933fefecd89d7eff370f4bcfc9271f859` (source version `2026.10.2.20`).
 
 This source adds:
+
+- Larger 40 px carousel icons with adjusted value/context spacing. Climate retains
+  its centered mode heading without a separate icon.
 
 - Persistent pause feedback over media covers and one-second next/previous badges.
 - Larger centered HVAC mode/emoji without a separate climate icon. Pressing cycles
