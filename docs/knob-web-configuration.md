@@ -2,9 +2,17 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`d257b6966fec6797987dd3c4d79feb2f2911196b` (source version `2026.10.2.21`).
+`fa27d9ba78af45f3b042023282d8189e1f75560c` (source version `2026.10.2.22`).
 
 This source adds:
+
+- Condition-aware weather carousel icons, respecting Home Assistant's supplied
+  icon and explicit user overrides.
+- Saved DD-MM / MM-DD / YYYY-MM-DD date preferences and 12/24-hour clocks in
+  Device settings, shared by forecast dates and the standby screen. Existing
+  display preferences are preserved; older backups receive DD-MM/24-hour defaults.
+  Latest automatic validation is pending; `.19` evidence below is for the earlier
+  weather release and does not verify these additions.
 
 - Dial-selectable weather pages: current temperature/condition/feels-like/humidity,
   wind/pressure/visibility/UV, and up to five daily forecast pages with high/low
