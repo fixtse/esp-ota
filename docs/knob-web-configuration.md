@@ -2,9 +2,20 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`60f3c8e5a2c09eca81690de13a180d07f1c5a418` (source version `2026.10.2.27`).
+`1070120d89a8a796ec153322c2316e4845707168` (source version `2026.10.2.28`).
 
 This source adds:
+
+- Named-month date formats such as **10 Nov**, **Nov 10**, and **2026-Nov-10**
+  across standby, forecasts, date sensors, and secondary date/datetime text.
+  Existing numeric date preferences and backups remain readable.
+- **Display**, **Press action**, and media-only **Playlists** slot tabs. Padded
+  playlist rows use icon reorder/remove buttons. The shared searchable picker
+  selects scripts/automations and fills a friendly name automatically; cancelling
+  it does not add a blank entry. The unused advanced display-type selector is
+  removed from the UI; native type detection remains automatic.
+- A dispatch-only embedded JavaScript syntax/static-reference check. Codespaces
+  and the regression suites remain skipped per user preference.
 
 - Separate artwork memory limits matched to its 12 KB worker stack (32 KB total
   free internal RAM, 14 KB largest block). Live `.28` reported a 16 KB block and
