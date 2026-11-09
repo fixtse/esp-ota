@@ -2,9 +2,15 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`0ae25222712f54bbfc4220243b465efbd29af731` (source version `2026.10.2.9`).
+`4d0006e13893d5e7c0beb42cca58a0bcc78cc879` (source version `2026.10.2.12`).
 
 This source adds:
+
+- Temporary command feedback expires and restores media artist/entity metadata.
+- Saved-slot MDI metadata syncs automatically when the browser catalogue refreshes.
+  Downloads wait for a valid clock, handle chunked responses, try a backup HTTPS
+  source, and retry with backoff while retaining built-in fallbacks.
+- Device settings presses cannot be consumed by the previously selected entity.
 
 - Downloaded Home Assistant MDI icons, background SVG rendering, a bounded RAM
   cache, and built-in entity-type fallbacks when icons cannot be downloaded.
@@ -45,7 +51,9 @@ when the ESPHome compiler version has not changed. The workflow creates the actu
 OTA image, checksum, incremented release version, and published manifest after a
 successful compilation. Do not manually relabel an older binary or checksum.
 
-Validation completed for source `0ae25222712f54bbfc4220243b465efbd29af731`:
+Current revision validation and OTA publication are pending completion callbacks.
+
+Previous release validation for source `0ae25222712f54bbfc4220243b465efbd29af731`:
 
 - [Regressions](https://github.com/fixtse/OpenNextion-KNOB-ESPHome/actions/runs/42609651908)
   passed the production entity handlers, recovery scheduling and backpressure,
