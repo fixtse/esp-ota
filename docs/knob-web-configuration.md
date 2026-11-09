@@ -90,20 +90,27 @@ when the ESPHome compiler version has not changed. The workflow creates the actu
 OTA image, checksum, incremented release version, and published manifest after a
 successful compilation. Do not manually relabel an older binary or checksum.
 
-Current revision validation and OTA publication are pending completion callbacks.
+Validation completed for source `2550dbfa653627566de7bdb8c3bc0708456508d4`:
 
-Previous release `2026.10.2.15` validation:
+- [Regressions](https://github.com/fixtse/OpenNextion-KNOB-ESPHome/actions/runs/42662875760)
+  checked out the exact source and passed production input routing for idle
+  automation/script actions, play/pause, held track rotation and release suppression;
+  capability handling; per-page carousel ownership and spacing; complete HTTP/JSON;
+  saved colors/standby rules; icons; and browser/mobile configuration tests.
+  Retained browser screenshots include the media **When idle** binding.
+- [Build/publication](https://github.com/fixtse/esp-ota/actions/runs/42662943568)
+  checked out `da2461735a7ba7feaed6a474a42ac63057af6fbe` at
+  `/home/runner/work/esp-ota/esp-ota`, imported that exact source, compiled with
+  ESPHome 2026.10.2 and published actual release `2026.10.2.17`.
+- Downloaded binary matches manifest MD5 `55f7664cfbec2a206a0428e496834ade`
+  and GitHub SHA-256 `863a16945654de3cf2b59cabe2e7be6a5d1340db2ebc17af8f83e402b3014554`.
+- Physical device completed the `.16` to `.17` OTA with USB capture and reported
+  a successful boot. No panic appeared during capture. Native API/web checks
+  confirmed the running version, unchanged saved slots, the existing orange ring
+  setting, main-only standby, complete selected-entity JSON and integer volume.
+  The real browser media page exposed **When idle** and loaded live values/artwork;
+  uptime continued increasing through page checks without a restart.
 
-- [Regressions](https://github.com/fixtse/OpenNextion-KNOB-ESPHome/actions/runs/42631731689)
-  checked out exact source `4f24f83c2b059dcaf2dec2168ae6296982d24eb8` and passed
-  HTTP flash-backed assets and complete large responses, display models, scoped
-  standby, integer volume, icon downloads and browser/mobile settings tests.
-- [Build/publication](https://github.com/fixtse/esp-ota/actions/runs/42631784843)
-  checked out `9d564a75ba7503b95ccce368ead63b5f576fbfe3`, imported that exact source,
-  compiled with ESPHome 2026.10.2 and published actual release `2026.10.2.15`.
-- Downloaded binary matches manifest MD5 `f9618cce8b47698e07f3d033b1efa7b0`
-  and GitHub SHA-256 `9fc6c4699b7bf272f18fcdf7ad3857cfed72fff20d57f478cdd8ecac94659f6e`.
-- Physical device completed OTA with USB capture, booted `.15`, returned complete
-  selected-entity preview JSON, and loaded the real browser UI with live readings.
-  The user confirmed the website works. New layout feedback is addressed by the
-  pending source above; carousel animation/padding still require hardware confirmation.
+[Published firmware](https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.10.2-42662943568-1).
+Physical press/turn confirmation was requested from the user and is still pending;
+those gesture routes have passed automated production-handler tests.
