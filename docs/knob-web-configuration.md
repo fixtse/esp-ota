@@ -2,9 +2,16 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`672ac5d00badd90faa8fc3ffa8423afa76c8cf66` (source version `2026.10.2.14`).
+`efb7686fbd67ed824571a750763167b26f4b38b5` (source version `2026.10.2.15`).
 
 This source adds:
+
+- Live state/value on every main carousel entry, including light brightness,
+  cover position, climate/fan mode and media playback/track.
+- A media-ring color picker with presets, custom colors and backup persistence.
+- Whole-number media volume and a configurable weather timeout scope that defaults
+  to the main carousel only; opened entity views remain visible by default.
+- Backup schema 2 with version 1 migration defaults.
 
 - A refreshed orange/slate configuration website with light/dark themes and Nunito.
 - Live device previews using the same presentation model as the display, including
