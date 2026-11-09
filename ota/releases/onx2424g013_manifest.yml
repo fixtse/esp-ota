@@ -7,10 +7,10 @@
     {
       "chipFamily": "ESP32-S3",
       "ota": {
-        "md5": "faa6d938f4aeeac5556b33441b6b5894",
-        "path": "https://github.com/fixtse/esp-ota/releases/download/esphome-2026.10.2-42712941530-1/onx2424g013.ota.bin",
+        "md5": "9ccc9b1d06905a9b59ad93a7423ed5f4",
+        "path": "https://github.com/fixtse/esp-ota/releases/download/esphome-2026.10.2-42713503006-1/onx2424g013.ota.bin",
         "summary": "Firmware 2026.10.2.25; ESPHome 2026.10.2",
-        "release_url": "https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.10.2-42712941530-1"
+        "release_url": "https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.10.2-42713503006-1"
       }
     }
   ]
