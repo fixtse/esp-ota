@@ -2,9 +2,16 @@
 
 `configs/onx2424g013.yaml` imports firmware from
 `fixtse/OpenNextion-KNOB-ESPHome` at commit
-`2550dbfa653627566de7bdb8c3bc0708456508d4` (source version `2026.10.2.18`).
+`173743daf97211dd730bd835bcffc4624b3b9644` (source version `2026.10.2.19`).
 
 This source adds:
+
+- Persistent pause feedback over media covers and one-second next/previous badges.
+- Larger centered HVAC mode/emoji without a separate climate icon. Pressing cycles
+  the selected preset, fan or swing mode; temperature controls keep HVAC cycling.
+
+Codespaces validation was explicitly skipped for this revision at the user's
+request. Automatic GitHub build/regression results are pending completion callbacks.
 
 - Media presses pause/resume a loaded track, or run a configured automation/script
   when idle. The website exposes the media binding as **When idle**.
@@ -90,7 +97,7 @@ when the ESPHome compiler version has not changed. The workflow creates the actu
 OTA image, checksum, incremented release version, and published manifest after a
 successful compilation. Do not manually relabel an older binary or checksum.
 
-Validation completed for source `2550dbfa653627566de7bdb8c3bc0708456508d4`:
+Previous release validation completed for source `2550dbfa653627566de7bdb8c3bc0708456508d4`:
 
 - [Regressions](https://github.com/fixtse/OpenNextion-KNOB-ESPHome/actions/runs/42662875760)
   checked out the exact source and passed production input routing for idle
@@ -112,5 +119,4 @@ Validation completed for source `2550dbfa653627566de7bdb8c3bc0708456508d4`:
   uptime continued increasing through page checks without a restart.
 
 [Published firmware](https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.10.2-42662943568-1).
-Physical press/turn confirmation was requested from the user and is still pending;
-those gesture routes have passed automated production-handler tests.
+The user confirmed the physical media press/turn gestures work on `.17`.
