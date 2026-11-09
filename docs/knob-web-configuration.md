@@ -51,20 +51,20 @@ when the ESPHome compiler version has not changed. The workflow creates the actu
 OTA image, checksum, incremented release version, and published manifest after a
 successful compilation. Do not manually relabel an older binary or checksum.
 
-Current revision validation and OTA publication are pending completion callbacks.
+Validation completed for source `4d0006e13893d5e7c0beb42cca58a0bcc78cc879`:
 
-Previous release validation for source `0ae25222712f54bbfc4220243b465efbd29af731`:
-
-- [Regressions](https://github.com/fixtse/OpenNextion-KNOB-ESPHome/actions/runs/42609651908)
-  passed the production entity handlers, recovery scheduling and backpressure,
-  legacy credential cleanup, media progress, MDI selection, SVG rasterization,
-  Wi-Fi lifecycle, HTTP, registry persistence, and browser/mobile configuration.
-- [OTA build and publication](https://github.com/fixtse/esp-ota/actions/runs/42609735065)
-  checked out `6336285f2ac971badb2ba2524812a60344f13e9a`, imported the exact source
-  revision above, compiled with ESPHome 2026.10.2, and published firmware `2026.10.2.9`.
+- [Regressions](https://github.com/fixtse/OpenNextion-KNOB-ESPHome/actions/runs/42620363297)
+  checked out that exact source and passed production entity handlers, transient
+  feedback expiry, settings input routing, recovery, media progress, icon selection,
+  chunked download/fallback/retry handling, SVG rasterization, Wi-Fi lifecycle,
+  HTTP, registry persistence, automatic icon metadata sync, and browser/mobile UI.
+- [OTA build and publication](https://github.com/fixtse/esp-ota/actions/runs/42620407241)
+  checked out `a2195b045e8bda8011f6dffea4ae14d4ec5a099d` at
+  `/home/runner/work/esp-ota/esp-ota`, imported the exact source revision above,
+  compiled with ESPHome 2026.10.2, and published firmware `2026.10.2.12`.
 - The downloaded release binary matches manifest MD5
-  `f37f9f5118e68be180f37beac12964e8` and release SHA-256
-  `3bc3f1a17f0c8df833e96179fba23e702b2cfde8b2c707b18781f41888dbdb32`.
+  `9e6ee69242288c0af5d2363c097e3b6d` and release SHA-256
+  `77a2692c95066c69607a48082017dda231687e53de4e202cd810665f64351319`.
 
-[Published firmware](https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.10.2-42609735065-1).
+[Published firmware](https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.10.2-42620407241-1).
 Hardware and live Home Assistant behavior remain untested.
