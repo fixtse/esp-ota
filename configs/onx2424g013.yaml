@@ -2,7 +2,7 @@
 packages:
   knob:
     url: https://github.com/fixtse/OpenNextion-KNOB-ESPHome
-    ref: 59e95a65328eab15af05d9ab63d52f0f1528913d
+    ref: dc428ea127eaa42ad2a1c6a093a4a0ca9da79d33
     refresh: 0s
     files:
       - ONX2424G013.yaml
@@ -10,4 +10,4 @@ packages:
 esphome:
   project:
     name: fixtse.OpenNextion-KNOB-ESPHome
-    version: "2026.10.2.35"
+    version: "2026.10.2.36"
