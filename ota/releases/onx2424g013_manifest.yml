@@ -1,16 +1,16 @@
 {
   "name": "OpenNextion Knob by fixtSE",
-  "version": "2026.10.2.51",
+  "version": "2026.10.2.52",
   "home_assistant_domain": "esphome",
   "new_install_prompt_erase": false,
   "builds": [
     {
       "chipFamily": "ESP32-S3",
       "ota": {
-        "md5": "610ff2aea21fe3ddecaf75114f36bad5",
-        "path": "https://github.com/fixtse/esp-ota/releases/download/esphome-2026.10.2-42948878953-1/onx2424g013.ota.bin",
-        "summary": "Firmware 2026.10.2.51; ESPHome 2026.10.2",
-        "release_url": "https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.10.2-42948878953-1"
+        "md5": "7f3615484e0327e737914fe64c0dbb40",
+        "path": "https://github.com/fixtse/esp-ota/releases/download/esphome-2026.10.2-43028401396-1/onx2424g013.ota.bin",
+        "summary": "Firmware 2026.10.2.52; ESPHome 2026.10.2",
+        "release_url": "https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.10.2-43028401396-1"
       }
     }
   ]
