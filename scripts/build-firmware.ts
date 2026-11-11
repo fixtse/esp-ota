@@ -19,7 +19,7 @@ const entry = entries.find(entry => entry.config === selectedConfig);
 if (!entry) throw new Error(`Unknown configuration: ${selectedConfig}`);
 const publishedPath = join(root, 'ota', 'releases', entry.manifest);
 const published = readManifest(existsSync(publishedPath) ? publishedPath : join(root, 'ota', entry.manifest));
-const firmwareVersion = nextFirmwareVersion(version, published.version);
+let firmwareVersion = nextFirmwareVersion(version, published.version);
 const work = mkdtempSync(join(tmpdir(), 'esp-ota-'));
 const image = `ghcr.io/esphome/esphome:${version}`;
 const run = (args: readonly string[]) => execFileSync('docker', [...args], { stdio: 'inherit' });
@@ -34,6 +34,15 @@ try {
   const projectVersion = /(^[ \t]+project:[^\n]*\n(?:[ \t]*\n|[ \t]+(?!version:)[^\n]+\n)*?)([ \t]+version:)[^\n]*/gm;
   const config = source.replace(projectVersion, (_match, prefix: string, key: string) => {
     replacements += 1;
+    // Queued runs may have checked out a manifest from before the preceding
+    // build published. Never lower an explicitly requested project revision.
+    const declared = _match.slice(prefix.length + key.length).trim()
+      .match(/^["']?(\d{4}\.\d+\.\d+\.\d+)["']?\s*(?:#.*)?$/)?.[1];
+    if (declared?.startsWith(`${version}.`)) {
+      const requested = Number(declared.slice(version.length + 1));
+      const generated = firmwareVersion === version ? 0 : Number(firmwareVersion.slice(version.length + 1));
+      if (Number.isSafeInteger(requested) && requested > generated) firmwareVersion = declared;
+    }
     return `${prefix}${key} "${firmwareVersion}"`;
   });
   if (replacements !== 1) throw new Error(`Expected one project.version in ${entry.config}, found ${replacements}`);

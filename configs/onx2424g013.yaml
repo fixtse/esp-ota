@@ -1,4 +1,5 @@
 # Source packages and assets are maintained in the dedicated firmware repo.
+# Rebuild with the declared project version as the minimum OTA revision.
 packages:
   knob:
     url: https://github.com/fixtse/OpenNextion-KNOB-ESPHome
