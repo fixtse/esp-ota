@@ -1,10 +1,16 @@
 {
   "name": "Room Companion 3.5-inch (ONX3248G035)",
-  "version": "2026.10.2.84",
+  "version": "2026.10.2.85",
   "home_assistant_domain": "esphome",
   "new_install_prompt_erase": false,
-  "builds": [{
-    "chipFamily": "ESP32-S3",
-    "ota": {"path": "onx3248g035.ota.bin", "md5": "", "summary": "Initial release template; publish only after building"}
-  }]
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "ota": {
+        "path": "onx3248g035.ota.bin",
+        "md5": "bd7c5f01425f0f230a760ef6c42bc473",
+        "summary": "Enlarged HTTP buffers; firmware 2026.10.2.85; ESPHome 2026.10.2"
+      }
+    }
+  ]
 }
