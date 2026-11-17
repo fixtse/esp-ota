@@ -1,0 +1,15 @@
+# Room Companion 3.5-inch rectangular panel, with local Okay Nabu wake word.
+# Source packages, assets, AGPL license and upstream notices live in this repo.
+# Pin the exact tested source; never build a moving branch into public releases.
+packages:
+  room_companion:
+    url: https://github.com/fixtse/OpenNextion-Room-Companion
+    ref: 06dbf3b97849e53a2caa0dc7e0cd6725e86d4787
+    refresh: 0s
+    files:
+      - ONX3248G035.wake-word.yaml
+
+esphome:
+  project:
+    name: opennextion.onx3248g035
+    version: "2026.10.2.85"

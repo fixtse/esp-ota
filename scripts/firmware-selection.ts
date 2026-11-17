@@ -32,7 +32,7 @@ export function selectFirmware(root: string, entries: readonly FirmwareEntry[], 
   const marker = (path: string) => existsSync(join(root, path)) ? read(path).trim() : '';
   return entries.filter(entry => force ||
     !existsSync(join(root, 'ota', 'releases', entry.manifest)) ||
-    (marker(`firmware-versions/${entry.config}.txt`) || marker('.esphome-version')) !== compiler ||
+    (marker(`firmware-versions/${entry.config}.txt`) || marker('.esphome-version')) !== (entry.compiler ?? compiler) ||
     marker(`firmware-versions/${entry.config}.source-sha256`) !== sourceFingerprint(entry, read));
 }
 

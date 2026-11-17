@@ -108,3 +108,12 @@ test('statistics select the latest asset per firmware across partial releases, r
   assert.ok(!summary.includes('esphome-preview'));
   assert.ok(!summary.includes('100'));
 });
+
+test('publishes a pinned compiler asset alongside a newer detected release', () => {
+  writeFileSync(join(root,'firmware_list.txt'),'one.yaml,one.ota.bin,one_manifest.yml,one,2026.10.2\n');
+  stage('one','2026.10.2.85');
+  writeFileSync(join(incoming,'firmware-versions/one.yaml.txt'),'2026.10.2');
+  const result=publish();
+  assert.equal(result.published,1);
+  assert.equal(JSON.parse(readFileSync(join(root,'ota/releases/one_manifest.yml'),'utf8')).version,'2026.10.2.85');
+});

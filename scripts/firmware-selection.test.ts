@@ -39,3 +39,18 @@ test('include cycles terminate and missing or unsupported dependencies fail safe
   assert.throws(() => sourceFingerprint(entry, () => 'package: !include ../outside.yaml'), /outside configs/);
   assert.throws(() => sourceFingerprint(entry, () => 'package: !include ${dynamic}.yaml'), /Unsupported include/);
 });
+
+test('pinned compiler does not rebuild solely for a newer upstream release', () => {
+  const root = mkdtempSync(join(tmpdir(), 'firmware-pin-'));
+  const entry = { config: 'panel.yaml', binary: 'panel.bin', manifest: 'panel.json', node: 'panel', compiler: '2026.10.2' };
+  try {
+    for (const path of ['configs', 'ota/releases', 'firmware-versions']) mkdirSync(join(root,path), {recursive:true});
+    writeFileSync(join(root,'configs/panel.yaml'),'sensor: []\n');
+    writeFileSync(join(root,'ota/releases/panel.json'),'{}');
+    writeFileSync(join(root,'firmware-versions/panel.yaml.txt'),'2026.10.2');
+    writeFileSync(join(root,'firmware-versions/panel.yaml.source-sha256'),sourceFingerprint(entry,p=>readFileSync(join(root,p),'utf8')));
+    assert.deepEqual(selectFirmware(root,[entry],'2026.11.0'),[]);
+    writeFileSync(join(root,'configs/panel.yaml'),'sensor: []\n# changed\n');
+    assert.deepEqual(selectFirmware(root,[entry],'2026.11.0'),[entry]);
+  } finally {rmSync(root,{recursive:true,force:true});}
+});

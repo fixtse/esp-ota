@@ -76,7 +76,7 @@ jobs:
           node-version: '24'
       - name: Compile firmware and update its manifest
         env:
-          ESPHOME_VERSION: ${{ needs.detect.outputs.version }}
+          ESPHOME_VERSION: ${{ matrix.compiler || needs.detect.outputs.version }}
           FIRMWARE_CONFIG: ${{ matrix.config }}
         run: node scripts/build-firmware.ts "$ESPHOME_VERSION" "$FIRMWARE_CONFIG"
       - name: Upload successful firmware

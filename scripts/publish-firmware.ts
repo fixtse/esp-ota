@@ -30,8 +30,8 @@ export function publishFirmware(options: PublishOptions): { published: number; m
       const content = readFileSync(path);
       const manifest = readManifest(join(incoming, 'ota', entry.manifest));
       const ota = getOta(manifest, entry.binary);
-      if (!/^[a-f0-9]{64}$/.test(fingerprint) || marker !== compiler || !content.length || ota.md5 !== createHash('md5').update(content).digest('hex') ||
-          !new RegExp(`^${compiler.replaceAll('.', '\\.')}([.]\\d+)?$`).test(manifest.version)) {
+      if (!/^[a-f0-9]{64}$/.test(fingerprint) || marker !== (entry.compiler ?? compiler) || !content.length || ota.md5 !== createHash('md5').update(content).digest('hex') ||
+          !new RegExp(`^${marker.replaceAll('.', '\\.')}([.]\\d+)?$`).test(manifest.version)) {
         throw new Error(`Invalid built firmware or checksum: ${entry.config}`);
       }
       return { entry, path, manifest, marker, fingerprint };
@@ -43,7 +43,7 @@ export function publishFirmware(options: PublishOptions): { published: number; m
   const releaseUrl = `https://github.com/${repository}/releases/tag/${tag}`;
   const notes = join(incoming, 'release-notes.md');
   writeFileSync(notes, [
-    `Built with ESPHome ${compiler}.`, '',
+    `ESPHome release ${compiler}; individual assets use their configured compiler pins.`, '',
     ...ready.map(({ entry, manifest }) => `- ${entry.binary}: firmware ${manifest.version}`), '',
     'Download counts measure asset downloads, including retries; they are not unique-device counts.',
   ].join('\n'));

@@ -17,6 +17,7 @@ if (!version || !/^\d{4}\.\d+\.\d+$/.test(version) || !selectedConfig) {
 const entries = loadFirmwareList(join(root, 'firmware_list.txt'));
 const entry = entries.find(entry => entry.config === selectedConfig);
 if (!entry) throw new Error(`Unknown configuration: ${selectedConfig}`);
+if (entry.compiler && version !== entry.compiler) throw new Error(`Use pinned ESPHome ${entry.compiler} for ${selectedConfig}`);
 const publishedPath = join(root, 'ota', 'releases', entry.manifest);
 const published = readManifest(existsSync(publishedPath) ? publishedPath : join(root, 'ota', entry.manifest));
 let firmwareVersion = nextFirmwareVersion(version, published.version);

@@ -5,6 +5,7 @@ export interface FirmwareEntry {
   readonly binary: string;
   readonly manifest: string;
   readonly node: string;
+  readonly compiler?: string;
 }
 export interface FirmwareManifest {
   version: string;
@@ -16,11 +17,12 @@ export function loadFirmwareList(path: string): readonly FirmwareEntry[] {
     .filter(line => line.trim() && !line.trim().startsWith('#'))
     .map(line => {
       const fields = line.split(',').map(field => field.trim());
-      if (fields.length !== 4 || fields.some(field => !/^[A-Za-z0-9_-][A-Za-z0-9_.-]*$/.test(field))) {
+      if ((fields.length !== 4 && fields.length !== 5) || fields.some(field => !/^[A-Za-z0-9_-][A-Za-z0-9_.-]*$/.test(field))) {
         throw new Error(`Invalid firmware list entry: ${line}`);
       }
-      const [config, binary, manifest, node] = fields;
-      return { config, binary, manifest, node };
+      const [config, binary, manifest, node, compiler] = fields;
+      if (compiler && !/^\d{4}\.\d+\.\d+$/.test(compiler)) throw new Error(`Invalid compiler: ${compiler}`);
+      return { config, binary, manifest, node, ...(compiler ? { compiler } : {}) };
     });
   if (!entries.length) throw new Error('Firmware list is empty');
   for (const key of ['config', 'binary', 'manifest'] as const) {
