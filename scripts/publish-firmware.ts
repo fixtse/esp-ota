@@ -1,7 +1,9 @@
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { appendFileSync, copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { appendFileSync, copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { tmpdir } from 'node:os';
+import { validateRoomCompanionOta } from './firmware-artifact.ts';
 import { fileURLToPath } from 'node:url';
 import { getOta, loadFirmwareList, readManifest } from './firmware-domain.ts';
 
@@ -13,7 +15,24 @@ interface PublishOptions {
   readonly target: string;
   readonly runId: string;
   readonly attempt: string;
+  readonly verifyDownload?: (url: string, size: number, sha256: string) => void;
   readonly gh?: (args: readonly string[]) => void;
+}
+
+function verifyPublicDownload(url: string, size: number, sha256: string): void {
+  const work = mkdtempSync(join(tmpdir(), 'esp-ota-verify-'));
+  try {
+    const path = join(work, 'firmware.bin');
+    execFileSync('curl', ['--fail', '--silent', '--show-error', '--location', '--proto', '=https',
+      '--proto-redir', '=https', '--retry', '5', '--retry-all-errors', '--retry-max-time', '120',
+      '--max-time', '60', '--max-filesize', String(size), '--output', path, url], { stdio: 'inherit' });
+    const downloaded = readFileSync(path);
+    if (downloaded.length !== size || createHash('sha256').update(downloaded).digest('hex') !== sha256) {
+      throw new Error(`Published OTA bytes differ from the validated build: ${url}`);
+    }
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
 }
 
 export function publishFirmware(options: PublishOptions): { published: number; migrations: number; release?: string } {
@@ -34,7 +53,16 @@ export function publishFirmware(options: PublishOptions): { published: number; m
           !new RegExp(`^${marker.replaceAll('.', '\\.')}([.]\\d+)?$`).test(manifest.version)) {
         throw new Error(`Invalid built firmware or checksum: ${entry.config}`);
       }
-      return { entry, path, manifest, marker, fingerprint };
+      if (entry.config === 'onx3248g035.yaml') validateRoomCompanionOta(content);
+      const releaseManifest = join(root, 'ota', 'releases', entry.manifest);
+      if (existsSync(releaseManifest)) {
+        const previous = readManifest(releaseManifest).version;
+        if (manifest.version.localeCompare(previous, 'en', { numeric: true }) <= 0) {
+          throw new Error(`Firmware version must increase for ${entry.config}: ${previous} -> ${manifest.version}`);
+        }
+      }
+      return { entry, path, manifest, marker, fingerprint, size: content.length,
+        sha256: createHash('sha256').update(content).digest('hex') };
     });
   if (!ready.length) return { published: 0, migrations: 0 };
 
@@ -50,9 +78,17 @@ export function publishFirmware(options: PublishOptions): { published: number; m
   const gh = options.gh ?? (args => { execFileSync('gh', [...args], { stdio: 'inherit' }); });
   gh(['release', 'create', tag, '--repo', repository, '--target', target, '--draft',
     '--title', `ESPHome ${compiler} · build ${runId}.${attempt}`, '--notes-file', notes]);
-  // Only explicitly validated OTA images may be uploaded. Factory files never enter releases.
-  gh(['release', 'upload', tag, ...ready.map(item => item.path), '--repo', repository]);
+  // Publish the validated OTA images together with their SHA-256 checksums.
+  const checksums = join(incoming, 'SHA256SUMS');
+  writeFileSync(checksums, ready.map(({ entry, sha256 }) => `${sha256}  ${entry.binary}\n`).join(''));
+  gh(['release', 'upload', tag, ...ready.map(item => item.path), checksums, '--repo', repository]);
   gh(['release', 'edit', tag, '--repo', repository, '--draft=false', '--latest']);
+
+  const downloadBase = `https://github.com/${repository}/releases/download/${tag}`;
+  const verifyDownload = options.verifyDownload ?? verifyPublicDownload;
+  for (const { entry, size, sha256 } of ready) {
+    verifyDownload(`${downloadBase}/${entry.binary}`, size, sha256);
+  }
 
   // The existing manifest and raw image become an immutable migration checkpoint.
   // Its firmware checks the new release manifest after reboot. Subsequent runs only
@@ -72,7 +108,7 @@ export function publishFirmware(options: PublishOptions): { published: number; m
       migrations += 1;
     }
     const releaseOta = getOta(manifest, entry.binary);
-    releaseOta.path = `https://github.com/${repository}/releases/download/${tag}/${entry.binary}`;
+    releaseOta.path = `${downloadBase}/${entry.binary}`;
     releaseOta.release_url = releaseUrl;
     writeFileSync(releaseManifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
     writeFileSync(join(root, 'firmware-versions', `${entry.config}.txt`), `${marker}\n`);

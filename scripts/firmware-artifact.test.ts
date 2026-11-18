@@ -3,7 +3,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { afterEach, beforeEach, test } from 'node:test';
-import { findOtaFirmware } from './firmware-artifact.ts';
+import { findOtaFirmware, validateRoomCompanionOta } from './firmware-artifact.ts';
 
 let buildRoot: string;
 beforeEach(() => { buildRoot = mkdtempSync(join(tmpdir(), 'ota-artifact-test-')); });
@@ -47,4 +47,16 @@ test('rejects a missing artifact or a directory named firmware.ota.bin', () => {
   assert.throws(() => findOtaFirmware(buildRoot, 'mmwave-sensor'), /Missing or empty OTA binary/);
   mkdirSync(join(buildRoot, 'build', 'firmware.ota.bin'), { recursive: true });
   assert.throws(() => findOtaFirmware(buildRoot, 'mmwave-sensor'), /Missing or empty OTA binary/);
+});
+
+test('Room Companion accepts a slot-sized ESP32-S3 application and rejects incompatible images', () => {
+  const slot = Buffer.alloc(0x7c0000);
+  slot[0] = 0xe9;
+  slot.writeUInt16LE(9, 12);
+  slot.writeUInt32LE(0xabcd5432, 32);
+  assert.doesNotThrow(() => validateRoomCompanionOta(slot));
+  assert.throws(() => validateRoomCompanionOta(Buffer.concat([slot, Buffer.alloc(1)])), /OTA slot/);
+  assert.throws(() => validateRoomCompanionOta(Buffer.alloc(288)), /application image/);
+  slot.writeUInt32LE(0, 32);
+  assert.throws(() => validateRoomCompanionOta(slot), /application image/);
 });

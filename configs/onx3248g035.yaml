@@ -12,4 +12,4 @@ packages:
 esphome:
   project:
     name: opennextion.onx3248g035
-    version: "2026.10.2.88"
+    version: "2026.10.2.89"

@@ -32,9 +32,9 @@ function stage(name: string, version = '2026.10.0.1') {
   writeFileSync(join(incoming, 'firmware-versions', `${name}.yaml.txt`), '2026.10.0');
   writeFileSync(join(incoming, 'firmware-versions', `${name}.yaml.source-sha256`), 'a'.repeat(64));
 }
-function publish(gh: (args: readonly string[]) => void = args => { calls.push(args); }, runId = '10') {
+function publish(gh: (args: readonly string[]) => void = args => { calls.push(args); }, runId = '10', verifyDownload = (_url: string, _size: number, _sha256: string) => {}) {
   return publishFirmware({ root, incoming, compiler: '2026.10.0', repository: 'fixtse/esp-ota',
-    target: 'a'.repeat(40), runId, attempt: '1', gh });
+    target: 'a'.repeat(40), runId, attempt: '1', gh, verifyDownload });
 }
 
 test('firmware revisions follow the compiler release', () => {
@@ -79,6 +79,18 @@ test('upload failure leaves all published images, manifests, and markers unchang
   const old = readFileSync(join(root, 'ota/one_manifest.yml'), 'utf8');
   assert.throws(() => publish(args => { if (args[1] === 'upload') throw new Error('upload failure'); }), /upload failure/);
   assert.equal(readFileSync(join(root, 'ota/one_manifest.yml'), 'utf8'), old);
+  assert.ok(!existsSync(join(root, 'ota/releases/one_manifest.yml')));
+  assert.ok(!existsSync(join(root, 'firmware-versions/one.yaml.txt')));
+});
+
+test('failed public download verification leaves the active manifest unchanged', () => {
+  stage('one');
+  assert.throws(() => publish(undefined, '10', (url, size, sha256) => {
+    assert.match(url, /one\.ota\.bin$/);
+    assert.equal(size, Buffer.byteLength('new:2026.10.0.1'));
+    assert.equal(sha256, createHash('sha256').update('new:2026.10.0.1').digest('hex'));
+    throw new Error('download mismatch');
+  }), /download mismatch/);
   assert.ok(!existsSync(join(root, 'ota/releases/one_manifest.yml')));
   assert.ok(!existsSync(join(root, 'firmware-versions/one.yaml.txt')));
 });

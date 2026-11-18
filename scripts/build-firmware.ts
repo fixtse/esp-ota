@@ -4,7 +4,7 @@ import { cpSync, existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, write
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { sourceFingerprint } from './firmware-selection.ts';
-import { findOtaFirmware } from './firmware-artifact.ts';
+import { findOtaFirmware, validateRoomCompanionOta } from './firmware-artifact.ts';
 
 import { getOta, loadFirmwareList, nextFirmwareVersion, readManifest } from './firmware-domain.ts';
 
@@ -56,6 +56,7 @@ try {
   const firmware = findOtaFirmware(join(work, 'config', '.esphome', 'build', entry.node), entry.node);
   console.log(`Using OTA binary: ${firmware}`);
   const content = readFileSync(firmware);
+  if (entry.config === 'onx3248g035.yaml') validateRoomCompanionOta(content);
   const manifest = structuredClone(published);
   manifest.version = firmwareVersion;
   const ota = getOta(manifest, entry.binary);
