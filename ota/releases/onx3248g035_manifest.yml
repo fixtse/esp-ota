@@ -7,10 +7,10 @@
     {
       "chipFamily": "ESP32-S3",
       "ota": {
-        "path": "https://github.com/fixtse/esp-ota/releases/download/esphome-2026.10.2-44226392038-1/onx3248g035.ota.bin",
-        "md5": "066f01e6b06cb8cb570cf1f251bb2d97",
+        "path": "https://github.com/fixtse/esp-ota/releases/download/esphome-2026.10.2-44227085506-1/onx3248g035.ota.bin",
+        "md5": "46d097f5a2854cee316ac8105d9618e9",
         "summary": "Firmware 2026.10.2.88; ESPHome 2026.10.2",
-        "release_url": "https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.10.2-44226392038-1"
+        "release_url": "https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.10.2-44227085506-1"
       }
     }
   ]
