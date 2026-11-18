@@ -4,7 +4,7 @@ Source: https://github.com/formatBCE/Respeaker-Lite-ESPHome-integration
 Revision: `6d68e61f1d615c59bd7d47e8f4e8c09e53583892` (release 2026.10.3).
 Entry point: `config/common/respeaker-satellite-base.yaml`.
 
-The seven packages are vendored here so the firmware source is reviewable in this repository. The top-level configuration pins the corresponding component, audio files, and wake-word assets to the same revision. Whitespace is normalized and the base file's include paths point to these local copies.
+The seven packages are vendored here so the firmware source is reviewable in this repository. The top-level configuration pins the XMOS firmware, audio files, and wake-word assets to that revision. The hardware package separately pins the ReSpeaker Lite component to upstream release 2026.11.2 (commit `919b4aceae49f64d0af874dce7d3b1750e7734ef`) for its ESPHome 2026.11 compatibility fix. Whitespace is normalized and the base file's include paths point to these local copies.
 
 Local correction: `fetch_first_active_timer` handles empty lists and ignores paused timers when choosing the next active timer.
 

@@ -13,6 +13,8 @@ substitutions:
   # firmware. Each release sets it to its own tag, so a pinned package stays
   # consistent. Set it to "main" to follow the newest code.
   respeaker_lite_ref: 2026.10.3
+  # Upstream 2026.11.2 updates DFU version formatting for ESPHome 2026.11.
+  respeaker_lite_component_ref: 919b4aceae49f64d0af874dce7d3b1750e7734ef
 
 esphome:
   on_shutdown:
@@ -227,7 +229,7 @@ external_components:
   - source:
       type: git
       url: https://github.com/formatBCE/Respeaker-Lite-ESPHome-integration
-      ref: ${respeaker_lite_ref}
+      ref: ${respeaker_lite_component_ref}
     components:
       - respeaker_lite
     refresh: 0s
