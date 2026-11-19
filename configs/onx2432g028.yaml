@@ -1,0 +1,15 @@
+# Room Companion 2.8-inch rectangular panel.
+# Source packages, assets, AGPL license and upstream notices live in this repo.
+# Pin the exact tested source; never build a moving branch into public releases.
+packages:
+  room_companion:
+    url: https://github.com/fixtse/OpenNextion-Room-Companion
+    ref: 310818a4aa4e7fb807545c6bf4b98d2da35fa8c0
+    refresh: 0s
+    files:
+      - ONX2432G028.yaml
+
+esphome:
+  project:
+    name: opennextion.onx2432g028
+    version: "2026.11.0.91"

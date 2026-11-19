@@ -56,7 +56,7 @@ try {
   const firmware = findOtaFirmware(join(work, 'config', '.esphome', 'build', entry.node), entry.node);
   console.log(`Using OTA binary: ${firmware}`);
   const content = readFileSync(firmware);
-  if (entry.config === 'onx3248g035.yaml') validateRoomCompanionOta(content);
+  if (['onx3248g035.yaml', 'onx2432g028.yaml'].includes(entry.config)) validateRoomCompanionOta(content);
   const manifest = structuredClone(published);
   manifest.version = firmwareVersion;
   const ota = getOta(manifest, entry.binary);

@@ -61,6 +61,16 @@ test('first publication stages a raw migration and a release manifest for succes
   assert.ok(!existsSync(join(root, 'firmware-versions/two.yaml.txt')));
 });
 
+test('a new device with no raw manifest publishes directly to GitHub Releases', () => {
+  rmSync(join(root, 'ota/one_manifest.yml'));
+  rmSync(join(root, 'ota/one.ota.bin'));
+  stage('one');
+  assert.equal(publish().migrations, 0);
+  assert.ok(existsSync(join(root, 'ota/releases/one_manifest.yml')));
+  assert.ok(!existsSync(join(root, 'ota/one_manifest.yml')));
+  assert.ok(!existsSync(join(root, 'ota/one.ota.bin')));
+});
+
 test('later publications never replace the raw migration checkpoint or existing release assets', () => {
   stage('one'); publish();
   const legacyManifest = readFileSync(join(root, 'ota/one_manifest.yml'), 'utf8');

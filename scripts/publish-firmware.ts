@@ -53,7 +53,7 @@ export function publishFirmware(options: PublishOptions): { published: number; m
           !new RegExp(`^${marker.replaceAll('.', '\\.')}([.]\\d+)?$`).test(manifest.version)) {
         throw new Error(`Invalid built firmware or checksum: ${entry.config}`);
       }
-      if (entry.config === 'onx3248g035.yaml') validateRoomCompanionOta(content);
+      if (['onx3248g035.yaml', 'onx2432g028.yaml'].includes(entry.config)) validateRoomCompanionOta(content);
       const releaseManifest = join(root, 'ota', 'releases', entry.manifest);
       if (existsSync(releaseManifest)) {
         const previous = readManifest(releaseManifest).version;
@@ -98,7 +98,7 @@ export function publishFirmware(options: PublishOptions): { published: number; m
   mkdirSync(join(root, 'firmware-versions'), { recursive: true });
   for (const { entry, path, manifest, marker, fingerprint } of ready) {
     const releaseManifestPath = join(root, 'ota', 'releases', entry.manifest);
-    if (!existsSync(releaseManifestPath)) {
+    if (!existsSync(releaseManifestPath) && existsSync(join(root, 'ota', entry.manifest))) {
       const bridge = structuredClone(manifest);
       const bridgeOta = getOta(bridge, entry.binary);
       bridgeOta.path = entry.binary;
