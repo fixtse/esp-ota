@@ -17,8 +17,8 @@ packages:
 esphome:
   project:
     name: fixtse.Voice PE SoundSense
-    version: 2026.10.0.4
-  min_version: 2026.10.0
+    version: 2026.11.0.1
+  min_version: 2026.11.0
   name: voice-pe-sound-sense
   friendly_name: Voice PE SoundSense
   name_add_mac_suffix: true

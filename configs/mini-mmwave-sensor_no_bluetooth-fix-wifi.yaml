@@ -2,7 +2,7 @@ esphome:
   name: mini-mmwave-sensor-no
   project:
     name: fixtse.mmWave Sensor
-    version: 2026.10.0.1
+    version: 2026.11.0.1
   friendly_name: mini mmWave Sensor No Bluetooth
   name_add_mac_suffix: True
 

@@ -17,8 +17,8 @@ packages:
 esphome:
   project:
     name: fixtse.Respeaker Lite Satellite
-    version: 2026.10.0.2
-  min_version: 2026.10.0
+    version: 2026.11.0.1
+  min_version: 2026.11.0
   name: respeaker-satellite
   friendly_name: respeaker-satellite
   name_add_mac_suffix: true

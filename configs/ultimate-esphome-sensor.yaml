@@ -2,7 +2,7 @@ esphome:
   name: uesp-sensor
   project:
     name: fixtse.Ultimate Sensor
-    version: 2026.10.0.1
+    version: 2026.11.0.1
   friendly_name: Ultimate Sensor
   name_add_mac_suffix: True
 
