@@ -1,16 +1,16 @@
 {
   "name": "Voice PE SoundSense",
-  "version": "2026.11.0.1",
+  "version": "2026.11.0.2",
   "home_assistant_domain": "esphome",
   "new_install_prompt_erase": false,
   "builds": [
     {
       "chipFamily": "ESP32-S3",
       "ota": {
-        "md5": "d4ce8b18286bff70153c23a41353201a",
-        "path": "https://github.com/fixtse/esp-ota/releases/download/esphome-2026.11.0-44654034082-1/voice-pe-sound-sense.ota.bin",
-        "release_url": "https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.11.0-44654034082-1",
-        "summary": "Firmware 2026.11.0.1; ESPHome 2026.11.0"
+        "md5": "c9fc30a88bab87929e3d33fbddd9e29d",
+        "path": "https://github.com/fixtse/esp-ota/releases/download/esphome-2026.11.0-44660755184-1/voice-pe-sound-sense.ota.bin",
+        "release_url": "https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.11.0-44660755184-1",
+        "summary": "Firmware 2026.11.0.2; ESPHome 2026.11.0"
       }
     }
   ]
