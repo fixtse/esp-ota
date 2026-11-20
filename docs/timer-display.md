@@ -1,11 +1,22 @@
 # Voice timers on the OpenNextion knob
 
 Voice PE SoundSense and ReSpeaker Satellite expose a `Voice timer` text sensor.
-It reports the nearest running timer, falling back to the nearest paused timer.
-The `onx.timer.v1` JSON state contains `state`, `name`, `duration`, `remaining`
-(seconds), and `count`. It refreshes once per second; timer creation and control
-remain on the voice device. Alarm ringing also reports `ringing` because these
-configurations share their timer/alarm ringing switch.
+Its `onx.timer.v1` JSON state describes the next timer (nearest running, else
+nearest paused) in `state`, `name`, `duration`, `remaining` (seconds) and
+`count`, so older displays keep working. `timers` lists every timer, soonest
+first, as `[name, duration, remaining, active]`. Home Assistant limits states to
+255 bytes: list names are dropped first, then the latest timers. It refreshes
+once per second. Alarm ringing reports `ringing` because these configurations
+share their timer/alarm ringing switch.
+
+Assist timers are owned by Home Assistant, so displays control them with Assist
+sentences through `conversation.process` ("pause the pasta timer", "cancel the
+5 minute timer"). The satellite's **Stop timer alarm** button
+(`button.<device>_stop_timer_alarm`, derived from `sensor.<device>_voice_timer`)
+stops a ringing alarm. Room Companion shows every listed timer with
+Pause/Resume/Stop. On the knob, a press pauses/resumes the next timer or stops a
+ringing alarm, and a ~1 s hold (released before the 2 s exit hold) cancels it.
+Duplicate unnamed timers of the same duration may be ambiguous to Home Assistant.
 
 Flash the updated voice firmware, refresh entities on the knob, select the
 voice device's **Voice timer** sensor in Device1–Device10 and save. Open the
@@ -26,7 +37,7 @@ Ringing timers take priority, followed by the earliest running timer, then pause
 timers. Turning the dial dismisses the popup and resumes browsing; it returns
 after ten idle seconds if still active. Settings, scheduled sleep and an explicitly
 off screen are not interrupted. The ring uses the selected media progress color
-and flashes at completion. Timer control stays on its originating system.
+and flashes at completion. Voice satellite timers can be paused, resumed and cancelled from the display (above).
 Automatic CI passed for source `f4793fc` (regression `42672743885`, attempt 2).
 Release `.21` was published and installed on the knob; physical popup and completion
 flashing behavior remain unverified.

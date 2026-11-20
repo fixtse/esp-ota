@@ -9,31 +9,52 @@ text_sensor:
     icon: mdi:timer-outline
     update_interval: 1s
     lambda: |-
-      const auto &timers = id(va).get_timers();
-      const voice_assistant::Timer *next = nullptr;
-      for (const auto &timer : timers) {
-        if (next == nullptr || (timer.is_active && !next->is_active) ||
-            (timer.is_active == next->is_active && timer.seconds_left < next->seconds_left))
-          next = &timer;
-      }
+      // Soonest first: active before paused, then by time left.
+      std::vector<const voice_assistant::Timer *> list;
+      for (const auto &timer : id(va).get_timers()) list.push_back(&timer);
+      std::sort(list.begin(), list.end(), [](const voice_assistant::Timer *a, const voice_assistant::Timer *b) {
+        return a->is_active != b->is_active ? a->is_active : a->seconds_left < b->seconds_left;
+      });
+      const voice_assistant::Timer *next = list.empty() ? nullptr : list.front();
       const bool ringing = id(timer_ringing).state;
       const char *state = ringing ? "ringing" : next == nullptr ? "idle" : next->is_active ? "active" : "paused";
-      std::string name = next == nullptr ? "" : next->name;
-      // HA entity states are limited to 255 bytes. Retry without the name if
-      // JSON escaping or a long user-supplied name exceeds that limit.
+      // The top-level onx.timer.v1 fields describe the next timer (older
+      // displays read only these). "timers" lists every timer as
+      // [name, duration, remaining, active]. HA entity states are limited to
+      // 255 bytes: drop list names, then the last timers, then the next name.
+      size_t listed = list.size();
+      bool list_names = true, next_name = true;
       auto snapshot = [&]() {
         return json::build_json([&](JsonObject root) {
           root["schema"] = "onx.timer.v1";
           root["state"] = state;
-          root["name"] = name;
+          root["name"] = next != nullptr && next_name ? next->name : "";
           root["duration"] = next == nullptr ? 0u : next->total_seconds;
           root["remaining"] = ringing || next == nullptr ? 0u : next->seconds_left;
-          root["count"] = timers.size();
+          root["count"] = list.size();
+          auto timers = root["timers"].to<JsonArray>();
+          for (size_t i = 0; i < listed; ++i) {
+            auto item = timers.add<JsonArray>();
+            item.add(list_names ? list[i]->name : std::string());
+            item.add(list[i]->total_seconds);
+            item.add(list[i]->seconds_left);
+            item.add(list[i]->is_active ? 1 : 0);
+          }
         });
       };
       std::string value = snapshot();
-      if (value.size() > 255) {
-        name.clear();
-        value = snapshot();
-      }
+      if (value.size() > 255) { list_names = false; value = snapshot(); }
+      while (value.size() > 255 && listed > 0) { --listed; value = snapshot(); }
+      if (value.size() > 255) { next_name = false; value = snapshot(); }
       return value;
+
+# Lets companion displays stop this device's ringing timer alarm through HA
+# (button.<device>_stop_timer_alarm). Timers themselves are controlled with
+# Assist sentences, because Home Assistant owns them.
+button:
+  - platform: template
+    id: voice_timer_stop_alarm
+    name: "Stop timer alarm"
+    icon: mdi:alarm-off
+    on_press:
+      - switch.turn_off: timer_ringing
