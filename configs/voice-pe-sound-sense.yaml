@@ -1,3 +1,10 @@
+substitutions:
+  # Official raw stereo PCM; hardware and software mute both gate measurement.
+  sound_sense_sample_bits: "32"
+  sound_sense_channels: "2"
+  sound_sense_channel: "0"
+  sound_sense_capture_allowed: "!id(hardware_mute_switch).state && !id(i2s_mics).get_mute_state() && id(mww).is_ready()"
+
 packages:
   # Prefix the official voice trigger, so BLE releases the shared radio first.
   va_connected_wait_for_ble:

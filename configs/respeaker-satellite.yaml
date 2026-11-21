@@ -1,4 +1,9 @@
 substitutions:
+  # XMOS raw stereo PCM; measure one channel and exclude muted/playback periods.
+  sound_sense_sample_bits: "32"
+  sound_sense_channels: "2"
+  sound_sense_channel: "0"
+  sound_sense_capture_allowed: "!id(mic_mute_switch).state && id(mww).is_ready()"
   # Pinned upstream release 2026.10.3; see common/respeaker-lite/UPSTREAM.md.
   respeaker_lite_ref: 6d68e61f1d615c59bd7d47e8f4e8c09e53583892
 
