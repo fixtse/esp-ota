@@ -32,8 +32,18 @@ jobs:
       version: ${{ steps.release.outputs.version }}
       build: ${{ steps.release.outputs.build }}
       matrix: ${{ steps.release.outputs.matrix }}
+      source: ${{ steps.source.outputs.sha }}
     steps:
+      # Runs are queued (concurrency above), but the triggering commit can be
+      # older than the previous run's manifest commit. Building from it reused
+      # an already published revision (2026-11-21: respeaker 2026.11.0.3 twice),
+      # so detect and every build read the latest default branch instead.
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch || 'main' }}
+      - name: Pin the source for this run's builds
+        id: source
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
@@ -71,6 +81,8 @@ jobs:
       matrix: ${{ fromJSON(needs.detect.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.detect.outputs.source }}
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
