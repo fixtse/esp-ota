@@ -1,16 +1,16 @@
 {
   "name": "Room Companion 3.5-inch (ONX3248G035)",
-  "version": "2026.11.0.122",
+  "version": "2026.11.0.123",
   "home_assistant_domain": "esphome",
   "new_install_prompt_erase": false,
   "builds": [
     {
       "chipFamily": "ESP32-S3",
       "ota": {
-        "path": "https://github.com/fixtse/esp-ota/releases/download/esphome-2026.11.0-44909369353-1/onx3248g035.ota.bin",
-        "md5": "f923c072b4de0cd8e8fd9687023ef8b8",
-        "summary": "Firmware 2026.11.0.122; ESPHome 2026.11.0",
-        "release_url": "https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.11.0-44909369353-1"
+        "path": "https://github.com/fixtse/esp-ota/releases/download/esphome-2026.11.0-44917510271-1/onx3248g035.ota.bin",
+        "md5": "4317895432427331687883936caece75",
+        "summary": "Firmware 2026.11.0.123; ESPHome 2026.11.0",
+        "release_url": "https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.11.0-44917510271-1"
       }
     }
   ]
