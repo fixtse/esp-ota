@@ -4,7 +4,7 @@
 packages:
   room_companion:
     url: https://github.com/fixtse/OpenNextion-Room-Companion
-    ref: 53df97d984a4367104a4c805f2608ee020e99621
+    ref: d4814edd2952a7ca1ca60f8456a1370be3f12160
     refresh: 0s
     files:
       - ONX2432G028.wake-word.yaml
@@ -12,4 +12,4 @@ packages:
 esphome:
   project:
     name: opennextion.onx2432g028
-    version: "2026.11.1"
+    version: "2026.11.1.1"
