@@ -1,0 +1,15 @@
+# Room Companion 3.5-inch rectangular panel, lite: no microphone or speaker.
+# Source packages, assets, AGPL license and upstream notices live in this repo.
+# Pin the exact tested source; never build a moving branch into public releases.
+packages:
+  room_companion:
+    url: https://github.com/fixtse/OpenNextion-Room-Companion
+    ref: 2e3339abf3c7a22c6d4379f15da7e39dc9a6e11e
+    refresh: 0s
+    files:
+      - ONX3248G035.lite.yaml
+
+esphome:
+  project:
+    name: fixtse.onx3248g035_lite
+    version: "2026.11.1.3"
