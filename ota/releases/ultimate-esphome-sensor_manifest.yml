@@ -1,16 +1,16 @@
 {
   "name": "Ultimate ESPHome Sensor",
-  "version": "2026.11.0.1",
+  "version": "2026.11.1",
   "home_assistant_domain": "esphome",
   "new_install_prompt_erase": false,
   "builds": [
     {
       "chipFamily": "ESP32",
       "ota": {
-        "md5": "912a956cc91a3a2b96eb76e6146f42bd",
-        "path": "https://github.com/fixtse/esp-ota/releases/download/esphome-2026.11.0-44660755184-1/ultimate-esphome-sensor.ota.bin",
-        "release_url": "https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.11.0-44660755184-1",
-        "summary": "Firmware 2026.11.0.1; ESPHome 2026.11.0"
+        "md5": "f61e8aa6181de138d931726896120e52",
+        "path": "https://github.com/fixtse/esp-ota/releases/download/esphome-2026.11.1-45580367607-1/ultimate-esphome-sensor.ota.bin",
+        "release_url": "https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.11.1-45580367607-1",
+        "summary": "Firmware 2026.11.1; ESPHome 2026.11.1"
       }
     }
   ]
