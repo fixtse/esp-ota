@@ -1,0 +1,16 @@
+{
+  "name": "Room Companion 2.8-inch Lite (ONX2432G028)",
+  "version": "2026.11.1",
+  "home_assistant_domain": "esphome",
+  "new_install_prompt_erase": false,
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "ota": {
+        "path": "onx2432g028_lite.ota.bin",
+        "md5": "00000000000000000000000000000000",
+        "summary": "Seed manifest; replaced by the first lite build"
+      }
+    }
+  ]
+}

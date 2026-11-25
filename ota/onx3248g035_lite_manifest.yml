@@ -1,0 +1,16 @@
+{
+  "name": "Room Companion 3.5-inch Lite (ONX3248G035)",
+  "version": "2026.11.1",
+  "home_assistant_domain": "esphome",
+  "new_install_prompt_erase": false,
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "ota": {
+        "path": "onx3248g035_lite.ota.bin",
+        "md5": "00000000000000000000000000000000",
+        "summary": "Seed manifest; replaced by the first lite build"
+      }
+    }
+  ]
+}
