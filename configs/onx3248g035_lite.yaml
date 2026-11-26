@@ -3,8 +3,8 @@
 # Pin the exact tested source; never build a moving branch into public releases.
 packages:
   room_companion:
-    url: https://github.com/fixtse/OpenNextion-Room-Companion
-    ref: 28ffefdde0c97ad5cb58b2c1fda32be39ec4d233
+    url: https://github.com/fixtse/ESPHome-Room-Companion
+    ref: b321971886a290023c0511ff880576a568db3dc1
     refresh: 0s
     files:
       - ONX3248G035.lite.yaml
@@ -12,4 +12,4 @@ packages:
 esphome:
   project:
     name: fixtse.onx3248g035_lite
-    version: "2026.11.1.4"
+    version: "2026.11.1.5"
