@@ -4,7 +4,7 @@
 packages:
   room_companion:
     url: https://github.com/fixtse/ESPHome-Room-Companion
-    ref: b321971886a290023c0511ff880576a568db3dc1
+    ref: 6df0d016a7f759b2e1d649627fdc339c669e9696
     refresh: 0s
     files:
       - ONX3248G035.wake-word.yaml
@@ -12,4 +12,4 @@ packages:
 esphome:
   project:
     name: fixtse.onx3248g035
-    version: "2026.11.1.5"
+    version: "2026.11.1.6"
