@@ -1,16 +1,16 @@
 {
   "name": "Room Companion 2.8-inch (ONX2432G028)",
-  "version": "2026.11.1.20",
+  "version": "2026.11.1.21",
   "home_assistant_domain": "esphome",
   "new_install_prompt_erase": false,
   "builds": [
     {
       "chipFamily": "ESP32-S3",
       "ota": {
-        "path": "https://github.com/fixtse/esp-ota/releases/download/esphome-2026.11.1-45883706390-1/onx2432g028.ota.bin",
-        "md5": "5620d9737d2c8dbb93449eb219ef3645",
-        "summary": "Firmware 2026.11.1.20; ESPHome 2026.11.1",
-        "release_url": "https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.11.1-45883706390-1"
+        "path": "https://github.com/fixtse/esp-ota/releases/download/esphome-2026.11.1-45888783618-1/onx2432g028.ota.bin",
+        "md5": "31e05c6fbb6870ce8b0368372f188d6f",
+        "summary": "Firmware 2026.11.1.21; ESPHome 2026.11.1",
+        "release_url": "https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.11.1-45888783618-1"
       }
     }
   ]
