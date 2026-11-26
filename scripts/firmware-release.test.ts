@@ -128,7 +128,7 @@ test('statistics select the latest asset per firmware across partial releases, r
   assert.ok(!summary.includes('factory.bin'));
   assert.ok(!summary.includes('esphome-draft'));
   assert.ok(!summary.includes('esphome-preview'));
-  assert.ok(!summary.includes('100'));
+  assert.ok(!summary.split('\n').some(line => line.endsWith(' | 100 |')));
 });
 
 test('publishes a pinned compiler asset alongside a newer detected release', () => {

@@ -25,7 +25,10 @@ const work = mkdtempSync(join(tmpdir(), 'esp-ota-'));
 const image = `ghcr.io/esphome/esphome:${version}`;
 const run = (args: readonly string[]) => execFileSync('docker', [...args], { stdio: 'inherit' });
 try {
-  cpSync(join(root, 'configs'), join(work, 'config'), { recursive: true });
+  cpSync(join(root, 'configs'), join(work, 'config'), {
+    recursive: true,
+    filter: path => path !== join(root, 'configs', '.esphome'),
+  });
   run(['pull', image]);
   console.log(`Building ${entry.config} with ESPHome ${version}`);
   const configPath = join(work, 'config', entry.config);
@@ -49,10 +52,23 @@ try {
   if (replacements !== 1) throw new Error(`Expected one project.version in ${entry.config}, found ${replacements}`);
   writeFileSync(configPath, config);
   const dockerArgs = ['run', '--rm', '--user', `${process.getuid?.() ?? 1000}:${process.getgid?.() ?? 1000}`,
-    '-e', 'HOME=/tmp', '-v', `${join(work, 'config')}:/config`, image];
-  // Two Wi-Fi variants share node names; clean to prevent reusing another variant's output.
-  run([...dockerArgs, 'clean', entry.config]);
-  run([...dockerArgs, 'compile', entry.config]);
+    '-e', 'HOME=/tmp', '-v', `${join(work, 'config')}:/config`];
+  const cacheDir = process.env.FIRMWARE_CACHE_DIR;
+  if (cacheDir) {
+    // Keep the build tree fresh while persisting packages and SCons' shared cache.
+    mkdirSync(join(work, 'config', '.esphome', 'platformio'), { recursive: true });
+    for (const [directory, target] of [
+      ['platformio', '/config/.esphome/platformio'],
+      ['tools', '/tmp/.platformio/tools'],
+      ['scons', '/build-cache'],
+    ]) {
+      const source = resolve(cacheDir, directory);
+      mkdirSync(source, { recursive: true });
+      dockerArgs.push('-v', `${source}:${target}`);
+    }
+    dockerArgs.push('-e', 'PLATFORMIO_BUILD_CACHE_DIR=/build-cache');
+  }
+  run([...dockerArgs, image, 'compile', entry.config]);
   const firmware = findOtaFirmware(join(work, 'config', '.esphome', 'build', entry.node), entry.node);
   console.log(`Using OTA binary: ${firmware}`);
   const content = readFileSync(firmware);

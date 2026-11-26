@@ -25,6 +25,8 @@ const args = process.argv.slice(2);
 if (args[0] === 'pull' || args.at(-2) === 'clean') process.exit(0);
 if (process.env.FAIL_BUILD === 'true') process.exit(42);
 const mount = args[args.indexOf('-v') + 1].slice(0, -8);
+if (fs.existsSync(path.join(mount, '.esphome/build'))) process.exit(43);
+fs.writeFileSync(path.join(__dirname, '..', 'docker-args.json'), JSON.stringify(args));
 const text = fs.readFileSync(path.join(mount, 'one.yaml'), 'utf8');
 const version = text.match(/version: "([^"\\n]+)"/)[1];
 const out = path.join(mount, '.esphome/build/one/build');
@@ -33,9 +35,11 @@ fs.writeFileSync(path.join(out, 'firmware.ota.bin'), version);
 `, { mode: 0o755 });
 });
 afterEach(() => rmSync(temp, { recursive: true, force: true }));
-function build(fail = false) {
+function build(fail = false, cache = '') {
   return spawnSync(process.execPath, [join(root, 'scripts/build-firmware.ts'), '2026.10.0', 'one.yaml'], {
-    encoding: 'utf8', env: { ...process.env, PATH: `${root}/bin:${process.env.PATH ?? ''}`, FAIL_BUILD: String(fail) },
+    encoding: 'utf8', env: {
+      ...process.env, PATH: `${root}/bin:${process.env.PATH ?? ''}`, FAIL_BUILD: String(fail), FIRMWARE_CACHE_DIR: cache,
+    },
   });
 }
 
@@ -65,4 +69,18 @@ test('compile failures do not stage a successful version marker', () => {
   const result = build(true);
   assert.notEqual(result.status, 0);
   assert.ok(!existsSync(join(root, 'built/firmware-versions/one.yaml.txt')));
+});
+
+test('cached builds mount dependencies and SCons without importing an old build tree', () => {
+  mkdirSync(join(root, 'configs/.esphome/build'), { recursive: true });
+  const cache = join(temp, 'cache');
+  const result = build(false, cache);
+  assert.equal(result.status, 0, result.stderr);
+  const args: string[] = JSON.parse(readFileSync(join(root, 'docker-args.json'), 'utf8'));
+  for (const mount of [
+    `${cache}/platformio:/config/.esphome/platformio`,
+    `${cache}/tools:/tmp/.platformio/tools`,
+    `${cache}/scons:/build-cache`,
+  ]) assert.ok(args.includes(mount));
+  assert.ok(args.includes('PLATFORMIO_BUILD_CACHE_DIR=/build-cache'));
 });
