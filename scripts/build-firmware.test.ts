@@ -79,7 +79,7 @@ test('cached builds mount dependencies and SCons without importing an old build 
   const args: string[] = JSON.parse(readFileSync(join(root, 'docker-args.json'), 'utf8'));
   for (const mount of [
     `${cache}/platformio:/config/.esphome/platformio`,
-    `${cache}/tools:/tmp/.platformio/tools`,
+    `${cache}/platformio-home:/tmp/.platformio`,
     `${cache}/scons:/build-cache`,
   ]) assert.ok(args.includes(mount));
   assert.ok(args.includes('PLATFORMIO_BUILD_CACHE_DIR=/build-cache'));

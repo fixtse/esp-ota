@@ -59,7 +59,7 @@ try {
     mkdirSync(join(work, 'config', '.esphome', 'platformio'), { recursive: true });
     for (const [directory, target] of [
       ['platformio', '/config/.esphome/platformio'],
-      ['tools', '/tmp/.platformio/tools'],
+      ['platformio-home', '/tmp/.platformio'],
       ['scons', '/build-cache'],
     ]) {
       const source = resolve(cacheDir, directory);
