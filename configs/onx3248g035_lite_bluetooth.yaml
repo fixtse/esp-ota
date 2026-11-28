@@ -1,0 +1,15 @@
+# Room Companion 3.5-inch rectangular panel, lite with Bluetooth Proxy / Bermuda.
+# Source packages, assets, AGPL license and upstream notices live in this repo.
+# Pin the exact tested source; never build a moving branch into public releases.
+packages:
+  room_companion:
+    url: https://github.com/fixtse/ESPHome-Room-Companion
+    ref: 6409b68f5aa51e31165b0f3ad63d73f5abcabe4b
+    refresh: 0s
+    files:
+      - ONX3248G035.lite-bluetooth.yaml
+
+esphome:
+  project:
+    name: "fixtse.ESPHome Room Companion ONX3248G035 Lite Bluetooth"
+    version: "2026.11.1.43"

@@ -13,3 +13,5 @@ onx3248g035.yaml,onx3248g035.ota.bin,onx3248g035_manifest.yml,onx3248g035
 onx2432g028.yaml,onx2432g028.ota.bin,onx2432g028_manifest.yml,onx2432g028
 onx3248g035_lite.yaml,onx3248g035_lite.ota.bin,onx3248g035_lite_manifest.yml,onx3248g035
 onx2432g028_lite.yaml,onx2432g028_lite.ota.bin,onx2432g028_lite_manifest.yml,onx2432g028
+onx3248g035_lite_bluetooth.yaml,onx3248g035_lite_bluetooth.ota.bin,onx3248g035_lite_bluetooth_manifest.yml,onx3248g035
+onx2432g028_lite_bluetooth.yaml,onx2432g028_lite_bluetooth.ota.bin,onx2432g028_lite_bluetooth_manifest.yml,onx2432g028
