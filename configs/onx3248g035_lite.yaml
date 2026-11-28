@@ -4,7 +4,7 @@
 packages:
   room_companion:
     url: https://github.com/fixtse/ESPHome-Room-Companion
-    ref: 84dd878bf385249f477670c0f372c5cef2d67072
+    ref: 55ac182e0df68ddf782f884198b8d3eff23a9192
     refresh: 0s
     files:
       - ONX3248G035.lite.yaml
@@ -12,4 +12,4 @@ packages:
 esphome:
   project:
     name: "fixtse.ESPHome Room Companion ONX3248G035 Lite"
-    version: "2026.11.1.38"
+    version: "2026.11.1.39"
