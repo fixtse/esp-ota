@@ -1,0 +1,17 @@
+{
+  "name": "Room Companion 3.5-inch Lite Bluetooth (ONX3248G035)",
+  "version": "2026.11.1.44",
+  "home_assistant_domain": "esphome",
+  "new_install_prompt_erase": false,
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "ota": {
+        "path": "https://github.com/fixtse/esp-ota/releases/download/esphome-2026.11.1-46165388194-1/onx3248g035_lite_bluetooth.ota.bin",
+        "md5": "30f8b9bcb73a3ffb401076655fc17707",
+        "summary": "Firmware 2026.11.1.44; ESPHome 2026.11.1",
+        "release_url": "https://github.com/fixtse/esp-ota/releases/tag/esphome-2026.11.1-46165388194-1"
+      }
+    }
+  ]
+}
